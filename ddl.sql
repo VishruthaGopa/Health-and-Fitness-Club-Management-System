@@ -84,13 +84,6 @@ CREATE TABLE IF NOT EXISTS Room_Bookings (
     time TIME,
     date DATE,
     duration INTERVAL,
-    session_id INTEGER,
-	class_id INTEGER
-    --FOREIGN KEY (session_id) REFERENCES Personal_Training_Sessions(session_id)
-	--FOREIGN KEY (class_id) REFERENCES Group_Fitness_Classes(class_id)
-	-- ABOVE TWO LINES DON'T WORK because they are trying to reference a table that have not been created yet.
-	-- We can't move this table below the Personal_Training_Sessions and Group_Fitness_Classes tables 
-	-- either because those tables reference Room_Bookings.
 );
 
 -- Create Personal_Training_Sessions table
