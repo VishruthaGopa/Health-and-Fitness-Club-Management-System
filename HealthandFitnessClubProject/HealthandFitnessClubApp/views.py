@@ -5,3 +5,6 @@ from django.http import HttpResponse
 # Create your views here.
 def home(request):
     return render(request, 'HealthandFitnessClubApp/home.html')
+
+def updateProfile(request):
+    return render(request, 'HealthandFitnessClubApp/updateProfile.html')
