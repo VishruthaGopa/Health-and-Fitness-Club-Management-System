@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS Room_Bookings (
     booked BOOLEAN,
     time TIME,
     date DATE,
-    duration INTERVAL,
+    duration INTERVAL
 );
 
 -- Create Personal_Training_Sessions table
