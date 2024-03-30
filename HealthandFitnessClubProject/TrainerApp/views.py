@@ -5,9 +5,19 @@ import psycopg2
 # Create your views here.
 def members(request):
     print("member view")
+    users = displayMembers()
+    print(users)  # testing
+    
+    return render(request, 'TrainerApp/members.html', {'users': users})
 
-    #return HttpResponse('<h1>Trainer Page</h1>')
-    return render(request, 'TrainerApp/members.html')
+# Display the Members table
+def displayMembers():
+    connection = connect()
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM \"User\" where role = 'member'")
+    users = cursor.fetchall()
+    connection.close()
+    return users
 
 # Connect to PostgreSQL database
 def connect():
