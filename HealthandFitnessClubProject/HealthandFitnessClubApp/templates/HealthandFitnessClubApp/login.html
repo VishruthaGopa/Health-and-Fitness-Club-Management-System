@@ -7,7 +7,7 @@
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f0f4f8; /* White background */
+    background-color: #f0f4f8; /* background */
     color: #333; /*Text colour*/
   }
   .container {
@@ -51,6 +51,10 @@
   input[type="submit"]:hover {
     background-color: #063974; /* Slightly lighter navy blue on hover */
   }
+  .message {
+    color: rgb(68, 68, 189); /* colour for messages */
+  }
+
 </style>
 </head>
 <body>
@@ -67,6 +71,12 @@
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" required>
     <input type="submit" value="Login">
+
+    <!-- Message placeholder -->
+    {% if message %}
+    <p class="message">{{ message }}</p>
+    {% endif %}
+    
   </form>
 
   <div class="register-link">
