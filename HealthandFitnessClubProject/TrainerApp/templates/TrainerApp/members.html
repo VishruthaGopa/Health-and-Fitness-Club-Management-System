@@ -64,6 +64,33 @@
         tr:hover {
             background-color: #f2f2f2;
         }
+                /* New styles for the search form */
+                .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .search-container input[type=text] {
+            width: 60%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        .search-container button[type=submit] {
+            padding: 10px 20px;
+            background-color: #0A192F;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .search-container button[type=submit]:hover {
+            background-color: #063974;
+        }
+
     </style>
 </head>
 <body>
@@ -78,6 +105,16 @@
     </div>
 </div>
     <h1>View Members</h1>
+
+      <!-- Search form -->
+      <div class="search-container">
+        <form action="" method="GET">
+          <input type="text" name="search" placeholder="Search members by name">
+          <button type="submit">Search</button>
+        </form>
+      </div>
+    
+    <!-- Member table -->
     <table>
         <thead>
             <tr>
