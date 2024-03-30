@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Homepage</title>
+<title>Register</title>
 <style>
   body {
     font-family: 'Arial', sans-serif;
@@ -59,23 +59,20 @@
   <h1>Health and Fitness Club!</h1>
   <p>Welcome to the Health and Fitness Club!</p>
   
-  <h2>Login</h2>
-  <form action="#" method="post">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
-    <input type="submit" value="Login">
-  </form>
-
   <h2>Register</h2>
   <form action="#" method="post">
+    {% csrf_token %}
     <label for="new_username">New Username:</label>
     <input type="text" id="new_username" name="new_username" required>
     <label for="new_password">New Password:</label>
     <input type="password" id="new_password" name="new_password" required>
     <input type="submit" value="Register">
   </form>
+
+  <div class="login-link">
+    <p>Already have an account? <a href="{% url 'HealthandFitnessApp-login' %}">Login</a></p>
+  </div>
+
 </div>
 
 </body>
