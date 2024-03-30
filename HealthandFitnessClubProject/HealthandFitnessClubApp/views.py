@@ -6,5 +6,3 @@ from django.http import HttpResponse
 def home(request):
     return render(request, 'HealthandFitnessClubApp/home.html')
 
-def updateProfile(request):
-    return render(request, 'HealthandFitnessClubApp/updateProfile.html')
