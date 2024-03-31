@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Members</title>
+    <title>Members List</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -90,20 +90,24 @@
         .search-container button[type=submit]:hover {
             background-color: #063974;
         }
-
     </style>
 </head>
 <body>
-  <div class="navbar">
-    <div class="navbar-left">
-        <a href="#home">Health and Fitness Club</a>
+
+    <!-- Navigation bar -->
+    <div class="navbar">
+        <div class="navbar-left">
+            <a href="#home">Health and Fitness Club</a>
+        </div>
+        <div class="navbar-right">
+            <a href="{% url 'TrainerApp-trainer_profile' %}">Profile</a>
+            <a href="#view-members">View Members</a>
+            <a href="#classes">Classes</a>
+            <a href="#role">Welcome, Trainer!</a>
+        </div>
     </div>
-    <div class="navbar-right">
-        <a href="#view-members">View Members</a>
-        <a href="#classes">Classes</a>
-        <a href="#role">Welcome, Trainer!</a>
-    </div>
-</div>
+
+    <!-- Members View -->
     <h1>View Members</h1>
 
       <!-- Search form -->

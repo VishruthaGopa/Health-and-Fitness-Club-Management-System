@@ -15,13 +15,33 @@ def displayMembers(search_query=None):
     connection = connect()
     cursor = connection.cursor()
     if search_query:  # Check if search_query is not empty
-        # Use LIKE operator to search for names containing the search query
+        # ILIKE operator to search for names containing the search query -> not case-sensitive
         cursor.execute("SELECT * FROM \"User\" WHERE role = 'member' AND username ILIKE %s", ('%' + search_query + '%',))
     else:
         cursor.execute("SELECT * FROM \"User\" WHERE role = 'member'")
     users = cursor.fetchall()
     connection.close()
     return users
+
+
+
+def trainer_profile(request):
+    # If this is a POST request, process the form data
+    if request.method == 'POST':
+        # Process your form data here, for example:
+        # specialization = request.POST.get('specialization')
+        # first_name = request.POST.get('first_name')
+        # last_name = request.POST.get('last_name')
+        # email = request.POST.get('email')
+        # phone = request.POST.get('phone')
+        # Save the data to your model...
+        
+        # Redirect to a new URL, or indicate success
+        return redirect('some-view-name')
+
+    # If a GET (or any other method), just render the form
+    return render(request, 'TrainerApp/trainer_profile.html')
+
 
 # Connect to PostgreSQL database
 def connect():
