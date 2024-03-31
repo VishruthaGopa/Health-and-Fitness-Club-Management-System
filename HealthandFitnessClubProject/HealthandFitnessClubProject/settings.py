@@ -33,6 +33,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'HealthandFitnessClubApp.apps.HealthandfitnessclubappConfig',
+    'TrainerApp.apps.TrainerConfig',
+    'AdminApp.apps.AdminappConfig',
     'Members.apps.MembersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -79,11 +81,11 @@ WSGI_APPLICATION = 'HealthandFitnessClubProject.wsgi.application'
 
 DATABASES = {
     'default': {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'fitnessManagement_db',
-    'USER': 'postgres',
-    'PASSWORD': 'postgres',
-    'HOST': 'localhost',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'fitnessManagement_db',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
     }
 
 }

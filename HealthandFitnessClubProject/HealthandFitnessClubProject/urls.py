@@ -24,6 +24,8 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('HealthandFitnessClubApp.urls')),
+    path('trainer/', include('TrainerApp.urls')),
+    path('AdminApp/', include('AdminApp.urls')),
     path('profile/', member_views.profile, name='profile'),
     path('updateProfile/', member_views.updateProfile, name='updateProfile'),
     

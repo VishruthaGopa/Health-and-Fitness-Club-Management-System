@@ -1,0 +1,33 @@
+{%extends "AdminApp/base.html"%}
+
+
+{%block content%}
+<h1>Personal Training Sessions</h1>
+<table class="table">
+    <tr>
+        <th>Session ID</th>
+        <th>Trainer Name</th>
+        <th>Member Name</th>
+        <th>Session Date</th>
+        <th>Session Time</th>
+        <th>Room Name</th>
+        <th>Action</th>
+    </tr>
+    {% for session in personal_sessions %}
+    <tr>
+        <td>{{ session.0 }}</td>
+        <td>{{ session.1.1 }} {{ session.1.2 }}</td>
+        <td>{{ session.2.1}} {{ session.2.2 }}</td>
+        <td>{{ session.3 }}</td>
+        <td>{{ session.5 }}</td>
+        <td>{{ session.6 }}</td>
+        <td>
+            <form method="post" action="{% url 'cancel_personal_training' session.0 %}">
+                {% csrf_token %}
+                <button type="submit">Cancel</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{%endblock content%}

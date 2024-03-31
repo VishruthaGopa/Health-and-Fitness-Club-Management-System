@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Trainer Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            display: block;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .navbar-left {
+            flex: 1;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+        }
+        .profile-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="email"], input[type="tel"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button[type="update"] {
+            background-color: #0A192F;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button[type="update"]:hover {
+            background-color: #063974;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation bar -->
+    <div class="navbar">
+        <div class="navbar-left">
+            <a href="#home">Health and Fitness Club</a>
+        </div>
+        <div class="navbar-right">
+            <a href="#profile">Profile</a>
+            <a href="{% url 'TrainerApp-viewMembers' user_id=user_id %}">View Members</a>
+            <a href="{% url 'TrainerApp-sessions_classes' user_id=user_id %}">Sessions & Classes</a>
+            <a href="#role">Welcome, Trainer!</a>
+        </div>
+    </div>
+
+
+<!-- Trainer Profile -->
+<div class="profile-container">
+    <h2 style="text-align: center;">TRAINER</h2>
+    <form action="" method="POST">        
+        {% csrf_token %}
+        <label for="first_name"><strong>First Name:</strong></label>
+        <input type="text" id="first_name" name="first_name" value="{{ trainer_data.0 }}" required><br>
+        <label for="last_name"><strong>Last Name:</strong></label>
+        <input type="text" id="last_name" name="last_name" value="{{ trainer_data.1 }}" required><br>
+        <label for="email"><strong>Email:</strong></label>
+        <input type="email" id="email" name="email" value="{{ trainer_data.2 }}" required><br>
+        <label for="phone"><strong>Phone Number:</strong></label>
+        <input type="tel" id="phone" name="phone" value="{{ trainer_data.3 }}"><br>
+
+        <label for="specializations"><strong>Specializations:</strong></label><br>
+        {% for specialization, selected in selected_specializations.items %}
+            <label>&nbsp;&nbsp;
+                <input type="checkbox" id="{{ specialization|lower }}" name="specialization" value="{{ specialization }}" {% if selected %} checked {% endif %}>
+                {{ specialization }}
+            </label><br>
+        {% endfor %}
+                
+        <button type="update">Update</button>
+    </form>
+</div>
+
+
+</body>
+</html>

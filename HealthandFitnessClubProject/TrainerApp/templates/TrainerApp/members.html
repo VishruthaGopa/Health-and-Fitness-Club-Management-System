@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Members List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            display: block;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .navbar-left {
+            flex: 1;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+            text-transform: uppercase;
+        }
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+                /* New styles for the search form */
+                .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .search-container input[type=text] {
+            width: 60%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        .search-container button[type=submit] {
+            padding: 10px 20px;
+            background-color: #0A192F;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .search-container button[type=submit]:hover {
+            background-color: #063974;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation bar -->
+    <div class="navbar">
+        <div class="navbar-left">
+            <a href="#home">Health and Fitness Club</a>
+        </div>
+        <div class="navbar-right">
+            <a href="{% url 'TrainerApp-trainer_profile' user_id=user_id %}">Profile</a>
+            <a href="#view-members">View Members</a>
+            <a href="{% url 'TrainerApp-sessions_classes' user_id=user_id %}">Sessions & Classes</a>
+            <a href="#role">Welcome, Trainer!</a>
+        </div>
+    </div>
+
+    <!-- Members View -->
+    <h1>View Members</h1>
+
+      <!-- Search form -->
+      <div class="search-container">
+        <form action="" method="GET">
+          <input type="text" name="search" placeholder="Search members by name">
+          <button type="submit">Search</button>
+        </form>
+      </div>
+    
+    <!-- Member table -->
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.0 }}</td> <!-- ID -->
+                <td>{{ user.1 }}</td> <!-- Name -->
+                <td>{{ user.2 }}</td> <!-- Email -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
