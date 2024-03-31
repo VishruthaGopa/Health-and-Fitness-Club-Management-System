@@ -62,7 +62,8 @@
         input[type="text"],
         input[type="date"],
         input[type="time"],
-        textarea {
+        input[type="number"],
+        textarea, select {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
@@ -117,7 +118,16 @@
             <input type="time" id="session_time" name="session_time" required><br>
             <label for="duration">Duration:</label>
             <input type="text" id="duration" name="duration" placeholder="e.g., 1 hour" required><br>
-            <!-- Add more input fields as needed -->
+            <label for="room_id">Room:</label>
+            <select id="room_id" name="room_id" required>
+                <option value="1">Room 1</option>
+                <option value="2">Room 2</option>
+                <!-- Rooms according to availability at speciifc time -->
+            </select><br>
+            <label for="price">Price ($):</label>
+            <input type="number" id="price" name="price" min="0" step="0.01" required><br>
+
+
             <button type="submit">Add Session</button>
         </form>
         
@@ -133,7 +143,12 @@
             <input type="date" id="session_date" name="session_date" required><br>
             <label for="session_time">Time:</label>
             <input type="time" id="session_time" name="session_time" required><br>
-            <!-- Add more input fields as needed -->
+            <label for="room_id">Room:</label>
+            <select id="room_id" name="room_id" required>
+                <option value="1">Room 1</option>
+                <option value="2">Room 2</option>
+                <!-- Rooms according to availability at speciifc time -->
+            </select><br>
             <button type="submit">Add Class</button>
         </form>
     </div>
