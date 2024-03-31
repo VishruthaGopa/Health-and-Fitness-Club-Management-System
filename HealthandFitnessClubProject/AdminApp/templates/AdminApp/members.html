@@ -1,0 +1,34 @@
+{%extends "AdminApp/base.html"%}
+
+
+{%block content%}
+<h1>Members</h1>
+<table class="table">
+    <tr>
+        <th>Member ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Gender</th>
+        <th>Email</th>
+        <th>Date of Birth</th>
+        <th>Address</th>
+        <th>Phone Number</th>
+        <th>Start Date</th>
+        <th>Payment Status</th>
+    </tr>
+    {% for member in members %}
+    <tr>
+        <td>{{ member.member_id }}</td>
+        <td>{{ member.first_name}}</td>
+        <td>{{ member.last_name }}</td>
+        <td>{{ member.gender }}</td>
+        <td>{{ member.email }}</td>
+        <td>{{ member.date_of_birth }}</td>
+        <td>{{ member.address }}</td>
+        <td>{{ member.phone_number }}</td>
+        <td>{{ member.start_date }}</td>
+        <td>{{ member.payment_status }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{%endblock content%}

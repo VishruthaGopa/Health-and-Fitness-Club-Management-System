@@ -1,0 +1,28 @@
+{%extends "AdminApp/base.html"%}
+
+
+{%block content%}
+<h1>Room Bookings</h1>
+<table class="table">
+    <tr>
+        <th>Room ID</th>
+        <th>Room Name</th>
+        <th>Room Location</th>
+        <th>Booked</th>
+        <th>Time</th>
+        <th>Date</th>
+        <th>Duration</th>
+    </tr>
+    {% for booking in room_bookings %}
+    <tr>
+        <td>{{ booking.room_id }}</td>
+        <td>{{ booking.room_name }}</td>
+        <td>{{ booking.room_location }}</td>
+        <td>{{ booking.booked }}</td>
+        <td>{{ booking.time }}</td>
+        <td>{{ booking.date }}</td>
+        <td>{{ booking.duration }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{%endblock content%}
