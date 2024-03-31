@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 import psycopg2
+from HealthandFitnessClubProject.databaseConnection import connect
 
 # Create your views here.
 def home(request):
@@ -113,19 +114,19 @@ def register_user(username, password):
     return True
 
 
-# Connect to PostgreSQL database
-def connect():
-    try:
-        # Update the database connection details to match your PostgreSQL configuration 
-        connection = psycopg2.connect(
-            host="localhost",
-            database="fitnessManagement_db",
-            user="postgres",
-            password="postgres"
-        )
-        #print("Connected to the database successfully.")
-        return connection
+# # Connect to PostgreSQL database
+# def connect():
+#     try:
+#         # Update the database connection details to match your PostgreSQL configuration 
+#         connection = psycopg2.connect(
+#             host="localhost",
+#             database="fitnessManagement_db",
+#             user="postgres",
+#             password="postgres"
+#         )
+#         #print("Connected to the database successfully.")
+#         return connection
     
-    except psycopg2.Error as e:
-        print("Unable to connect to the database.")
-        print(e)
+#     except psycopg2.Error as e:
+#         print("Unable to connect to the database.")
+#         print(e)
