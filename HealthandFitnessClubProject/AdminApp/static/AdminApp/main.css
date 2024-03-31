@@ -39,7 +39,7 @@ body {
 
 .navbar-right {
     display: flex;
-    align-items: center;
+    align-items: left;
 }
   
   .content-section {

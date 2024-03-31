@@ -15,14 +15,14 @@
     </tr>
     {% for session in personal_sessions %}
     <tr>
-        <td>{{ session.session_id }}</td>
-        <td>{{ session.trainer.first_name }} {{ session.trainer.last_name }}</td>
-        <td>{{ session.member.first_name }} {{ session.member.last_name }}</td>
-        <td>{{ session.session_date }}</td>
-        <td>{{ session.session_time }}</td>
-        <td>{{ session.room.room_name }}</td>
+        <td>{{ session.0 }}</td>
+        <td>{{ session.1.1 }} {{ session.1.2 }}</td>
+        <td>{{ session.2.1}} {{ session.2.2 }}</td>
+        <td>{{ session.3 }}</td>
+        <td>{{ session.5 }}</td>
+        <td>{{ session.6 }}</td>
         <td>
-            <form method="post" action="{% url 'cancel_personal_training' session.session_id %}">
+            <form method="post" action="{% url 'cancel_personal_training' session.0 %}">
                 {% csrf_token %}
                 <button type="submit">Cancel</button>
             </form>
