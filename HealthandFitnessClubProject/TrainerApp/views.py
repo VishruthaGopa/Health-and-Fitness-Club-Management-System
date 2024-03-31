@@ -24,24 +24,74 @@ def displayMembers(search_query=None):
     return users
 
 
+def trainer_profile(request, user_id):
+    # Execute the query with the form data
+    connection = connect()
+    cursor = connection.cursor()
+    print("Trainer ID:", user_id)  # Print user ID
 
-def trainer_profile(request):
-    # If this is a POST request, process the form data
     if request.method == 'POST':
-        # Process your form data here, for example:
-        # specialization = request.POST.get('specialization')
-        # first_name = request.POST.get('first_name')
-        # last_name = request.POST.get('last_name')
-        # email = request.POST.get('email')
-        # phone = request.POST.get('phone')
-        # Save the data to your model...
-        
-        # Redirect to a new URL, or indicate success
-        return redirect('some-view-name')
+        save_trainer_profile(request, user_id)        
+    
+    # Retrieve trainer's profile information from the database
+    trainer_data = get_trainer_data(user_id)
 
-    # If a GET (or any other method), just render the form
-    return render(request, 'TrainerApp/trainer_profile.html')
+    # Define all specializations
+    all_specializations = ['Cardio', 'Weightlifting', 'Yoga', 'Pilates', 'Crossfit', 'Kickboxing']
 
+    # Create a dictionary to hold whether each specialization is selected for the trainer
+    selected_specializations = {spec: spec in trainer_data[4] for spec in all_specializations}
+    print(selected_specializations)
+            
+    return render(request, 'TrainerApp/trainer_profile.html', {
+        'user_id': user_id,
+        'trainer_data': trainer_data,
+        'all_specializations': all_specializations,
+        'selected_specializations': selected_specializations
+    })
+
+def save_trainer_profile(request, user_id):
+    connection = connect()
+    cursor = connection.cursor()
+
+    if request.method == 'POST':
+        # Retrieve form data
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        specializations = request.POST.getlist('specialization')  # Retrieve list of selected specializations
+
+        # Execute SQL query to check if trainer exists
+        cursor.execute("SELECT COUNT(*) FROM Trainer WHERE trainer_id = %s", [user_id])
+        trainer_exists = cursor.fetchone()[0]
+
+        # SQL query to update or insert data into the Trainer table
+        if trainer_exists:
+            cursor.execute("""
+                UPDATE Trainer 
+                SET first_name = %s, last_name = %s, email = %s, phone_number = %s, specializations = %s
+                WHERE trainer_id = %s
+            """, [first_name, last_name, email, phone, specializations, user_id])
+        else:
+            cursor.execute("""
+                INSERT INTO Trainer (trainer_id, first_name, last_name, email, phone_number, specializations)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """, [user_id, first_name, last_name, email, phone, specializations])
+
+        connection.commit()
+
+def get_trainer_data(trainer_id):
+    connection = connect()
+    cursor = connection.cursor()
+    cursor.execute("""
+            SELECT first_name, last_name, email, phone_number, specializations
+            FROM Trainer
+            WHERE trainer_id = %s
+        """, [trainer_id])
+    trainer_data =  cursor.fetchone()
+    print(trainer_data)
+    return trainer_data
 
 # Connect to PostgreSQL database
 def connect():

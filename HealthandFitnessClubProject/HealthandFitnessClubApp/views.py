@@ -16,8 +16,19 @@ def home(request):
         if username and password:
             # Call the login_user function to verify credentials
             if login_user(username, password):
-                # Redirect to the updateProfile page if login is successful
-                return redirect('HealthandFitnessApp-updateProfile')
+                
+                # Get the user's role and ID
+                user_info = get_user_info(username)
+                #print("User ID:", user_info['user_id'])  # Print user ID
+
+                # Redirect based on user role
+                if user_info['role'] == 'member':
+                    return redirect('HealthandFitnessApp-updateProfile')
+                elif user_info['role'] == 'trainer':
+                    return redirect('TrainerApp-trainer_profile', user_id=user_info['user_id'])
+                elif user_info['role'] == 'admin':
+                    return redirect('admin_dashboard') # placeholder change this
+
             else:
                 print("Incorrect username or password.")
                 message = "Incorrect username or password."
@@ -25,10 +36,19 @@ def home(request):
         else:
             print("Username and password are required for login.")
             message = "Username and password are required for login."
-
-
     return render(request, 'HealthandFitnessClubApp/login.html', {'message': message})
 
+
+def get_user_info(username):
+    connection = connect()
+    cursor = connection.cursor()
+    cursor.execute("SELECT user_id, role FROM \"User\" WHERE username = %s", [username])
+    row = cursor.fetchone()
+    if row:
+        user_id, role = row
+        return {'user_id': user_id, 'role': role}
+    else:
+        return None
 
 def register(request):
     message = None  # Initialize message variable

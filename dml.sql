@@ -3,7 +3,8 @@ INSERT INTO "User" (username, password, role) VALUES
 ('user1', 'pass1', 'member'),
 ('user2', 'pass2', 'member'),
 ('admin1', 'adminpassword1', 'admin'),
-('trainer1', 'trainerpassword1', 'trainer');
+('trainer1', 'trainerpassword1', 'trainer'),
+('trainer2', 'pass2', 'trainer');
 
 -- Inserting sample data into the Member table
 INSERT INTO Member (member_id, first_name, last_name, gender, email, date_of_birth, address, phone_number, start_date, payment_status) VALUES
@@ -27,11 +28,12 @@ INSERT INTO Exercise_Routine (member_id, routine_name, description, duration, da
 
 -- Inserting sample data into the Admin table
 INSERT INTO Admin (admin_id, first_name, last_name, email, phone_number) VALUES
-(1, 'Admin', 'Smith', 'admin@example.com', '1112223333');
+(3, 'Admin', 'Smith', 'admin@example.com', '1112223333');
 
 -- Inserting sample data into the Trainer table
 INSERT INTO Trainer (trainer_id, first_name, last_name, email, phone_number, specializations) VALUES
-(1, 'Trainer', 'Johnson', 'trainer@example.com', '9998887777', '{Weightlifting, Yoga}');
+(4, 'Trainer1', 'Johnson', 'trainer@example.com', '9998887777', '{Weightlifting, Yoga, Pilates}'),
+(5, 'Trainer2', 'Bobby', 'bobby@example.com', '5552229865', '{Pilates, Yoga, Cardio}');
 
 -- Inserting sample data into the Room_Bookings table
 INSERT INTO Room_Bookings (room_name, room_location, booked, time, date, duration) VALUES
@@ -40,10 +42,10 @@ INSERT INTO Room_Bookings (room_name, room_location, booked, time, date, duratio
 
 -- Inserting sample data into the Personal_Training_Sessions table
 INSERT INTO Personal_Training_Sessions (trainer_id, member_id, session_date, session_time, duration, room_id, price, payment_status) VALUES
-(1, 1, '2024-03-26', '10:00:00', '1 hour', 1, 30.00, true),
-(1, 2, '2024-03-27', '15:00:00', '1 hour', 2, 40.00, true);
+(4, 1, '2024-03-26', '10:00:00', '1 hour', 1, 30.00, true),
+(5, 2, '2024-03-27', '15:00:00', '1 hour', 2, 40.00, true);
 
 -- Inserting sample data into the Group_Fitness_Classes table
 INSERT INTO Group_Fitness_Classes (trainer_id, room_id, class_name, description, session_date, session_time, member_ids) VALUES
-(1, 1, 'Morning Yoga', 'Beginner-friendly yoga class', '2024-03-28', '08:00:00', '{1, 2}'),
-(1, 2, 'Pilates Core Workout', 'Strengthen your core with pilates', '2024-03-29', '16:00:00', '{2}');
+(4, 1, 'Morning Yoga', 'Beginner-friendly yoga class', '2024-03-28', '08:00:00', '{1, 2}'),
+(5, 2, 'Pilates Core Workout', 'Strengthen your core with pilates', '2024-03-29', '16:00:00', '{2}');

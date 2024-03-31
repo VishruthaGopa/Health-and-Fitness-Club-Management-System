@@ -64,7 +64,7 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-        button[type="submit"] {
+        button[type="update"] {
             background-color: #0A192F;
             color: white;
             padding: 10px 15px;
@@ -72,7 +72,7 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        button[type="submit"]:hover {
+        button[type="update"]:hover {
             background-color: #063974;
         }
     </style>
@@ -96,26 +96,25 @@
 <div class="profile-container">
     <h2 style="text-align: center;">TRAINER</h2>
     <form action="" method="POST">        
+        {% csrf_token %}
         <label for="first_name"><strong>First Name:</strong></label>
-        <input type="text" id="first_name" name="first_name" required><br>
+        <input type="text" id="first_name" name="first_name" value="{{ trainer_data.0 }}" required><br>
         <label for="last_name"><strong>Last Name:</strong></label>
-        <input type="text" id="last_name" name="last_name" required><br>
+        <input type="text" id="last_name" name="last_name" value="{{ trainer_data.1 }}" required><br>
         <label for="email"><strong>Email:</strong></label>
-        <input type="email" id="email" name="email" required><br>
+        <input type="email" id="email" name="email" value="{{ trainer_data.2 }}" required><br>
         <label for="phone"><strong>Phone Number:</strong></label>
-        <input type="tel" id="phone" name="phone"><br>
+        <input type="tel" id="phone" name="phone" value="{{ trainer_data.3 }}"><br>
 
-        <label><strong>Specializations:</strong></label><br>
-        <label>&nbsp;&nbsp;<input type="checkbox" id="cardio" name="specialization" value="Cardio"> Cardio</label><br>
-        <label>&nbsp;&nbsp;<input type="checkbox" id="weightlifting" name="specialization" value="Weightlifting"> Weightlifting</label><br>
-        <label>&nbsp;&nbsp;<input type="checkbox" id="yoga" name="specialization" value="Yoga"> Yoga</label><br>
-        <label>&nbsp;&nbsp;<input type="checkbox" id="pilates" name="specialization" value="Pilates"> Pilates</label><br>
-        <label>&nbsp;&nbsp;<input type="checkbox" id="crossfit" name="specialization" value="Crossfit"> Crossfit</label><br>
-        <label>&nbsp;&nbsp;<input type="checkbox" id="kickboxing" name="specialization" value="Kickboxing"> Kickboxing</label><br>
-        <!-- Add more checkboxes here for other specializations -->
-
-        
-        <button type="submit">Save</button>
+        <label for="specializations"><strong>Specializations:</strong></label><br>
+        {% for specialization, selected in selected_specializations.items %}
+            <label>&nbsp;&nbsp;
+                <input type="checkbox" id="{{ specialization|lower }}" name="specialization" value="{{ specialization }}" {% if selected %} checked {% endif %}>
+                {{ specialization }}
+            </label><br>
+        {% endfor %}
+                
+        <button type="update">Update</button>
     </form>
 </div>
 
