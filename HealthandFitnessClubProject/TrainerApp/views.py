@@ -3,12 +3,13 @@ from django.http import HttpResponse
 import psycopg2
 
 # Create your views here.
-def members(request):
+def members(request, user_id):
     print("member view")
+    print("MV - Trainer ID:", user_id)  # Print user ID
     search_query = request.GET.get('search', '')  # Get the search query from the request
     users = displayMembers(search_query)  # Pass the search query to displayMembers
     print(users)  # testing
-    return render(request, 'TrainerApp/members.html', {'users': users})
+    return render(request, 'TrainerApp/members.html', { 'user_id': user_id,'users': users})
 
 # Display the Members table with optional search query
 def displayMembers(search_query=None):
