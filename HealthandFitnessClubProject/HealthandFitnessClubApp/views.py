@@ -24,7 +24,7 @@ def home(request):
 
                 # Redirect based on user role
                 if user_info['role'] == 'member':
-                    return redirect('HealthandFitnessApp-updateProfile')
+                    return redirect('HealthandFitnessApp-homepage')
                 elif user_info['role'] == 'trainer':
                     return redirect('TrainerApp-trainer_profile', user_id=user_info['user_id'])
                 elif user_info['role'] == 'admin':
@@ -39,6 +39,9 @@ def home(request):
             message = "Username and password are required for login."
     return render(request, 'HealthandFitnessClubApp/login.html', {'message': message})
 
+# Create your views here.
+def homePage(request):
+    return render(request, 'HealthandFitnessClubApp/homePage.html')
 
 def get_user_info(username):
     connection = connect()
