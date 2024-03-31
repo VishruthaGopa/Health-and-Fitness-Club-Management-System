@@ -26,8 +26,7 @@ urlpatterns = [
     path('', include('HealthandFitnessClubApp.urls')),
     path('trainer/', include('TrainerApp.urls')),
     path('AdminApp/', include('AdminApp.urls')),
-    path('profile/', member_views.profile, name='profile'),
-    path('updateProfile/', member_views.updateProfile, name='updateProfile'),
+    path('Members/', include('Members.urls')),
     
 ] 
 

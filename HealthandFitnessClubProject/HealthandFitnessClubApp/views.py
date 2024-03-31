@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 import psycopg2
+from django.contrib.auth import authenticate
 from HealthandFitnessClubProject.databaseConnection import connect
 
 # Create your views here.
@@ -20,11 +21,11 @@ def home(request):
                 
                 # Get the user's role and ID
                 user_info = get_user_info(username)
-                #print("User ID:", user_info['user_id'])  # Print user ID
+                print("User ID:", user_info['user_id'])  # Print user ID
 
                 # Redirect based on user role
                 if user_info['role'] == 'member':
-                    return redirect('HealthandFitnessApp-homepage')
+                    return redirect('HealthandFitnessApp-homepage', user_id=user_info['user_id'])
                 elif user_info['role'] == 'trainer':
                     return redirect('TrainerApp-trainer_profile', user_id=user_info['user_id'])
                 elif user_info['role'] == 'admin':
@@ -40,8 +41,8 @@ def home(request):
     return render(request, 'HealthandFitnessClubApp/login.html', {'message': message})
 
 # Create your views here.
-def homePage(request):
-    return render(request, 'HealthandFitnessClubApp/homePage.html')
+def homePage(request, user_id):
+    return render(request, 'HealthandFitnessClubApp/homePage.html', {'user_id': user_id,})
 
 def get_user_info(username):
     connection = connect()

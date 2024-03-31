@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends "HealthandFitnessClubApp/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-info {
+            margin-bottom: 10px;
+        }
+        .profile-info label {
+            font-weight: bold;
+            display: inline-block;
+            width: 120px;
+            margin-right: 10px;
+        }
+        .profile-info p {
+            display: inline;
+            margin: 0;
+        }
+        .update-button {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="media">
+            <img class="rounded-circle account-img" src="{{ MEDIA_URL }}profileIcon.jpg">
+        </div>
+        <h1>User Profile</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="profile-info">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" value="{{ user_data.username }}">
+            </div>
+            <div class="profile-info">
+                <label for="first-name">First Name:</label>
+                <input type="text" id="first-name" name="first_name" value="{{ user_data.first_name }}">
+            </div>
+            <div class="profile-info">
+                <label for="last-name">Last Name:</label>
+                <input type="text" id="last-name" name="last_name" value="{{ user_data.last_name }}">
+            </div>
+            <div class="profile-info">
+                <label for="gender">Gender:</label>
+                <input type="text" id="gender" name="gender" value="{{ user_data.gender }}">
+            </div>
+            <div class="profile-info">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="{{ user_data.email }}">
+            </div>
+            <div class="profile-info">
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" name="phone_number" value="{{ user_data.phone_number }}">
+            </div>
+            <div class="profile-info">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" value="{{ user_data.address }}">
+            </div>
+            <div class="profile-info">
+                <label for="paymentStatus">Payment Status:</label>
+                <input type="text" id="paymentStatus" name="payment_status" value="{{ user_data.payment_status }}">
+            </div>
+            <div class="profile-info">
+                <label for="startdate">Start Date:</label>
+                <input type="date" id="startdate" name="start_date" value="{{ user_data.start_date|date:'Y-m-d' }}">
+            </div>
+            <div class="update-button">
+                <button type="submit">Update</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+{% endblock content %}
