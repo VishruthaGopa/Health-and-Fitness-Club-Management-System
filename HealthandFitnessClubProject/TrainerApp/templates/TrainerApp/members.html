@@ -102,7 +102,7 @@
         <div class="navbar-right">
             <a href="{% url 'TrainerApp-trainer_profile' user_id=user_id %}">Profile</a>
             <a href="#view-members">View Members</a>
-            <a href="#classes">Classes</a>
+            <a href="{% url 'TrainerApp-sessions_classes' user_id=user_id %}">Sessions & Classes</a>
             <a href="#role">Welcome, Trainer!</a>
         </div>
     </div>
