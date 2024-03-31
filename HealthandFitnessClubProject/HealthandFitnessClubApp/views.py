@@ -73,8 +73,6 @@ def register(request):
 
     return render(request, 'HealthandFitnessClubApp/register.html', {'message': message})
 
-def updateProfile(request):
-    return render(request, 'HealthandFitnessClubApp/updateProfile.html')
 
 
 # Function to log in a user
