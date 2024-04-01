@@ -161,6 +161,93 @@ def removeClass(request):
      
     return redirect('groupFitnessClasses', user_id=user_id)
 
-
 def personalTrainingSessions(request, user_id):
-    return render(request, 'MembersApp/personalTrainingSessions.html', {'user_id': user_id,})
+    connection = connect()
+    cursor = connection.cursor()
+
+    # Retrieve classes that the member has enrolled in
+    cursor.execute("""
+        SELECT session_id, trainer_id, session_date, session_time, room_id
+        FROM personal_training_sessions
+        WHERE member_id = %s
+    """, [user_id])
+    enrolled_sessions = cursor.fetchall()
+
+    # Retrieve all available classes
+    cursor.execute("""
+        SELECT session_id, trainer_id, session_date, session_time, room_id, price, duration
+        FROM personal_training_sessions WHERE member_id is NULL
+    """)
+    available_sessions = cursor.fetchall()
+
+     # Retrieve all classes
+    cursor.execute("""
+        SELECT session_id, trainer_id, session_date, session_time, room_id, price, duration
+        FROM personal_training_sessions 
+    """)
+    all_sessions = cursor.fetchall()
+
+        # Create a dictionary to map trainer IDs to trainer names for available sessions
+    trainer_names = {}
+    for session in all_sessions:
+        if session[1] not in trainer_names:
+            cursor.execute("""SELECT first_name, last_name FROM trainer WHERE trainer_id = %s""", [session[1]])
+            trainer_name = " ".join(cursor.fetchone())  # Concatenate first_name and last_name
+            trainer_names[session[1]] = trainer_name
+
+    # Update the enrolled sessions and available sessions with trainer names
+    updated_enrolled_sessions = []
+    for session in enrolled_sessions:
+        updated_session = list(session)
+        updated_session[1] = trainer_names.get(session[1], 'Unknown Trainer')
+        updated_enrolled_sessions.append(updated_session)
+
+    updated_all_sessions = []
+    for session in available_sessions:
+        updated_session = list(session)
+        updated_session[1] = trainer_names.get(session[1], 'Unknown Trainer')
+        updated_all_sessions.append(updated_session)
+
+    connection.close()
+
+    return render(request, 'MembersApp/personalTrainingSessions.html', {
+        'user_id': user_id,
+        'booked_sessions': updated_enrolled_sessions,
+        'all_sessions': updated_all_sessions
+    })
+
+def bookPersonalTrainingSession(request, user_id):
+    connection = connect()
+    cursor = connection.cursor()
+
+    if request.method == 'POST':
+        selected_session_id = request.POST.get('session_id')
+        # Logic to book selected classes using selected_class_ids
+        # For example, update the database to add the user_id to the selected classes
+        if selected_session_id:
+            cursor.execute("""
+                UPDATE personal_training_sessions
+                SET member_id =  %s
+                WHERE session_id = %s;
+            """, [user_id, selected_session_id])
+            connection.commit()
+            messages.success(request, "The session has been booked successfully!")
+        connection.close()
+    return redirect('personalTrainingSessions', user_id=user_id)
+
+def removeClass(request):
+    connection = connect()
+    cursor = connection.cursor()
+
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        cursor.execute("""
+            UPDATE personal_training_sessions
+            SET member_id = NULL
+            WHERE session_id = %s;
+        """, [ request.POST.get('session_id')])
+        connection.commit()
+        messages.success(request, "The booking has been canceled.")
+        connection.close()
+     
+    return redirect('personalTrainingSessions', user_id=user_id)

@@ -3,106 +3,114 @@
 {% extends "HealthandFitnessClubApp/base.html" %}
 
 {% block content %}
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Group Fitness Classes</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                margin: 0;
-                padding: 0;
-                background-color: #f0f0f0;
-            }
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Fitness Classes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
 
-            .container {
-                max-width: 800px;
-                margin: 20px auto;
-                padding: 20px;
-                background-color: #fff;
-                border-radius: 5px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            max-width: 900px;
+            margin: 20px auto;
+        }
 
-            h1 {
-                text-align: center;
-                margin-bottom: 20px;
-            }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
 
-            h2 {
-                margin-top: 30px;
-            }
+        h2 {
+            margin-top: 30px;
+        }
 
-            ul {
-                list-style-type: none;
-                padding: 0;
-            }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
 
-            li {
-                margin-bottom: 10px;
-                border-bottom: 1px solid #ddd;
-                padding-bottom: 5px;
-            }
+        li {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
 
-            .booked-classes {
-                margin-bottom: 30px;
-            }
+        .booked-classes,
+        .available-classes {
+            width: calc(50% - 30px); /* Adjust width as needed */
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 5px double #ccc; /* Double border */
+        }
 
+        /* Optional: Add media query for responsiveness */
+        @media (max-width: 768px) {
+            .booked-classes,
             .available-classes {
-                margin-top: 30px;
+                width: 100%; /* Full width on smaller screens */
             }
-        </style>
-    </head>
-
-    <body>
-        {% if message %}
-            <div class="message">
-                {{ message }}
-            </div>
-        {% endif %}
-        <div class="container">
-            <h1>Group Fitness Classes</h1>
-     
-            <div class="booked-classes">
-                <h2>Your Booked Classes</h2>
-                {% if enrolled_classes %}
+        }
+    </style>
+</head>
+<body>
+    {% if message %}
+        <div class="message">
+            {{ message }}
+        </div>
+    {% endif %}
+    <div class="container">
+        <h1>Group Fitness Classes</h1>
+        <div class="booked-classes">
+            <h2>Your Booked Classes</h2>
+            {% if enrolled_classes %}
                 <ul>
                     {% for class_id, class_name, session_date, session_time in enrolled_classes %}
-                    <li>
-                        {{ class_name }} - {{ session_date }} {{ session_time }}
-                        <form method="post" action="{% url 'remove_class' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="user_id" value="{{ user_id }}">
-                            <input type="hidden" name="class_id" value="{{ class_id }}">
-                            <button type="submit">Remove Class</button>
-                        </form>
-                    </li>
+                        <li>
+                            {{ class_name }} - {{ session_date }} {{ session_time }}
+                            <form method="post" action="{% url 'remove_class' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="user_id" value="{{ user_id }}">
+                                <input type="hidden" name="class_id" value="{{ class_id }}">
+                                <button type="submit">Remove Class</button>
+                            </form>
+                        </li>
                     {% endfor %}
                 </ul>
-                {% else %}
+            {% else %}
                 <p>You have not booked any classes.</p>
-                {% endif %}
-            </div>
-            <div class="available-classes">
-                <h2>All Available Classes</h2>
-                <form method="post" action="{% url 'book_classes' user_id=user_id%}">
-                    {% csrf_token %}
-                    <input type="hidden" name="user_id" value="{{ user_id }}">
-                    <ul>
-                        {% for class_id, class_name, description, session_date, session_time in all_classes %}
-                            <li>
-                                <input type="checkbox" name="classes" value="{{ class_id }}">
-                                <label>{{ class_name }} - {{ session_date }} {{ session_time }}</label>
-                                <input type="hidden" name="class_ids" value="{{ class_id }}">
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    <button type="submit">Book Selected Classes</button>
-                </form>
-            </div>            
+            {% endif %}
         </div>
-    </body>
+        <div class="available-classes">
+            <h2>All Available Classes</h2>
+            <form method="post" action="{% url 'book_classes' user_id=user_id %}">
+                {% csrf_token %}
+                <input type="hidden" name="user_id" value="{{ user_id }}">
+                <ul>
+                    {% for class_id, class_name, description, session_date, session_time in all_classes %}
+                        <li>
+                            <input type="checkbox" name="classes" value="{{ class_id }}">
+                            <label>{{ class_name }} - {{ session_date }} {{ session_time }}</label>
+                            <input type="hidden" name="class_ids" value="{{ class_id }}">
+                        </li>
+                    {% endfor %}
+                </ul>
+                <button type="submit">Book Selected Classes</button>
+            </form>
+        </div>
+    </div>
+</body>
 </html>
 
 {% endblock content %}

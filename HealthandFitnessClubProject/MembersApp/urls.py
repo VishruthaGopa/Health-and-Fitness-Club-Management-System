@@ -10,4 +10,6 @@ urlpatterns = [
     path('personalTrainingSessions/<int:user_id>', views.personalTrainingSessions, name='personalTrainingSessions'),
     path('book_classes/<int:user_id>', views.bookClasses, name='book_classes'),
     path('remove_class', views.removeClass, name='remove_class'),
+    path('book_personal_training_session/<int:user_id>', views.bookPersonalTrainingSession, name='book_personal_training_session'),
+    path('remove_personal_training_session', views.removeClass, name='remove_personal_training_session'),
 ]
