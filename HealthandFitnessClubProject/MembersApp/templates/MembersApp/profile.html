@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
+    <title>Member Profile</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -52,11 +52,16 @@
             <img class="rounded-circle account-img" src="{{ MEDIA_URL }}profileIcon.jpg">
         </div>
         <h1>User Profile</h1>
+        {% if message %}
+        <div class="message">
+            {{ message }}
+        </div>
+        {% endif %}
         <form method="post">
             {% csrf_token %}
             <div class="profile-info">
                 <label for="username">Username:</label>
-                <input type="text" id="username" name="username" value="{{ user_data.username }}">
+                <input type="text" id="username" name="username" value="{{ user_data.username }}"readonly>
             </div>
             <div class="profile-info">
                 <label for="first-name">First Name:</label>
@@ -84,11 +89,11 @@
             </div>
             <div class="profile-info">
                 <label for="paymentStatus">Payment Status:</label>
-                <input type="text" id="paymentStatus" name="payment_status" value="{{ user_data.payment_status }}">
+                <input type="text" id="paymentStatus" name="payment_status" value="{{ user_data.payment_status }}"readonly>
             </div>
             <div class="profile-info">
                 <label for="startdate">Start Date:</label>
-                <input type="date" id="startdate" name="start_date" value="{{ user_data.start_date|date:'Y-m-d' }}">
+                <input type="date" id="startdate" name="start_date" value="{{ user_data.start_date|date:'Y-m-d' }}" readonly>
             </div>
             <div class="update-button">
                 <button type="submit">Update</button>
