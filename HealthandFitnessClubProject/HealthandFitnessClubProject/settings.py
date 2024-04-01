@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'HealthandFitnessClubApp.apps.HealthandfitnessclubappConfig',
+    'MembersApp.apps.MembersappConfig',
     'TrainerApp.apps.TrainerConfig',
     'AdminApp.apps.AdminappConfig',
     'django.contrib.admin',
