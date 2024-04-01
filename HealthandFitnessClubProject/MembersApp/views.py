@@ -54,8 +54,6 @@ def get_user_info(request, user_id):
 
         return user_info
     
-    
-
 
 def update_profile(request, user_id):
     connection = connect()
@@ -84,3 +82,85 @@ def update_profile(request, user_id):
     # Redirect to the profile page with the updated data and success message
     return redirect('profile', user_id=user_id)
     
+def groupFitnessClasses(request, user_id):
+    connection = connect()
+    cursor = connection.cursor()
+
+    # Retrieve classes that the member has enrolled in
+    cursor.execute("""
+        SELECT class_id, class_name, session_date, session_time
+        FROM Group_Fitness_Classes
+        WHERE %s = ANY(member_ids)
+    """, [user_id])
+    enrolled_classes = cursor.fetchall()
+
+    # Retrieve all available classes
+    cursor.execute("""
+        SELECT class_id, class_name, description, session_date, session_time
+        FROM Group_Fitness_Classes
+    """)
+    all_classes = cursor.fetchall()
+
+    return render(request, 'MembersApp/groupFitnessClasses.html', {
+        'user_id':user_id,
+        'enrolled_classes': enrolled_classes,
+        'all_classes': all_classes
+    })
+    #return render(request, 'MembersApp/groupFitnessClasses.html', {'user_id': user_id,})
+
+
+def bookClasses(request, user_id):
+    connection = connect()
+    cursor = connection.cursor()
+
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        selected_class_ids = request.POST.getlist('classes')
+        # Logic to book selected classes using selected_class_ids
+        # For example, update the database to add the user_id to the selected classes
+        if selected_class_ids:
+            for class_id in selected_class_ids:
+            # Check if the member is not already enrolled in the class
+                cursor.execute("""
+                    SELECT COUNT(*)
+                    FROM Group_Fitness_Classes
+                    WHERE class_id = %s AND %s = ANY(member_ids)
+                """, [class_id, user_id])
+                already_enrolled = cursor.fetchone()[0]
+
+                if not already_enrolled:
+                    # Update Group_Fitness_Classes to add user_id to the class_id
+                    cursor.execute("""
+                        UPDATE Group_Fitness_Classes
+                        SET member_ids = array_append(member_ids, %s)
+                        WHERE class_id = %s;
+                    """, [user_id, class_id])
+                    connection.commit()
+                    messages.success(request, "The class has been booked successfully!")
+                else:
+                    messages.success(request, "You have already registered for this class!")
+            connection.close()
+        else:
+            messages.success(request, "No classes have been selected.")
+    return redirect('groupFitnessClasses', user_id=user_id)
+
+def removeClass(request):
+    connection = connect()
+    cursor = connection.cursor()
+
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        cursor.execute("""
+            UPDATE Group_Fitness_Classes
+            SET member_ids = array_remove(member_ids, %s)
+            WHERE class_id = %s;
+        """, [user_id, request.POST.get('class_id')])
+        connection.commit()
+        messages.success(request, "The booking has been canceled.")
+        connection.close()
+     
+    return redirect('groupFitnessClasses', user_id=user_id)
+
+
+def personalTrainingSessions(request, user_id):
+    return render(request, 'MembersApp/personalTrainingSessions.html', {'user_id': user_id,})
