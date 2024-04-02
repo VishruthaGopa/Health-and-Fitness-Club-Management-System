@@ -1,3 +1,4 @@
+from xmlrpc.client import Boolean
 from django.http import HttpResponse
 from django.shortcuts import render
 import psycopg2
@@ -219,8 +220,18 @@ def personalTrainingSessions(request, user_id):
 def bookPersonalTrainingSession(request, user_id):
     connection = connect()
     cursor = connection.cursor()
-
+    
     if request.method == 'POST':
+        paid = request.POST.get('paid')
+        if paid == "False":
+        # Verify payment and get the response
+            payment_verification_response = verifyPayment(request, user_id, request.POST.get('session_id'))
+            
+            # Check if the response is a rendered template
+            if isinstance(payment_verification_response, HttpResponse):
+                # Return the rendered template response
+                return payment_verification_response
+    
         selected_session_id = request.POST.get('session_id')
         # Logic to book selected classes using selected_class_ids
         # For example, update the database to add the user_id to the selected classes
@@ -235,7 +246,25 @@ def bookPersonalTrainingSession(request, user_id):
         connection.close()
     return redirect('personalTrainingSessions', user_id=user_id)
 
-def removeClass(request):
+def verifyPayment(request, user_id, session_id):
+    context = {
+        'user_id': user_id,
+        'session_id': session_id
+    }
+    return render(request, 'MembersApp/payment_info.html', context)
+
+def getPaymentInfo(request, user_id):
+    if request.method == 'POST':
+        # Process the payment information here
+        # Once the payment is confirmed, call bookPersonalTrainingSession
+        
+        return bookPersonalTrainingSession(request, user_id)
+    else:
+        return HttpResponse("Invalid request method")
+
+        
+
+def removeSession(request):
     connection = connect()
     cursor = connection.cursor()
 

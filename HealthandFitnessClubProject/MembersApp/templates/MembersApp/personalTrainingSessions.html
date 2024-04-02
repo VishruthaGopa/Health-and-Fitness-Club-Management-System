@@ -141,10 +141,11 @@
                         <span>Room ID: {{ room_id }}</span><br>
                         <span>Price: ${{ price }}</span>
                     </div>
-                    <form method="post" action="{% url 'book_personal_training_session' user_id=user_id %}">
+                    <form method="post" action="{% url 'book_personal_training_session' user_id=user_id%}">
                         {% csrf_token %}
                         <input type="hidden" name="user_id" value="{{ user_id }}">
                         <input type="hidden" name="session_id" value="{{ session_id }}">
+                        <input type="hidden" name="paid" value="False">
                         <button type="submit">Book Session</button>
                     </form>
                     
