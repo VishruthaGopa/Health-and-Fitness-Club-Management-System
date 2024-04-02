@@ -13,13 +13,14 @@
 <body>
     <div class="navbar">
         <div class="navbar-right">
-                        <a href="{% url 'AdminApp-home' %}">Home</a>
-                        <a href="{% url 'AdminApp-about' %}">About</a>
-                        <a href="{% url 'AdminApp-display_members' %}">View Members</a>
-                        <a href="{% url 'AdminApp-display_room_bookings' %}">View Room Bookings</a>
-                        <a href="{% url 'AdminApp-display_personal_training' %}">View Personal Training Sessions</a>
-                        <a href="{% url 'AdminApp-display_group_fitness' %}">View Group Fitness Classes</a>
-                    </div>
+            <a href="{% url 'AdminApp-home' user_id=user_id %}">Home</a>
+            <a href="{% url 'AdminApp-display_members' user_id=user_id %}">View Members</a>
+            <a href="{% url 'AdminApp-trainers' user_id=user_id %}">View Trainers</a>
+            <a href="{% url 'AdminApp-display_room_bookings' user_id=user_id %}">View Room Bookings</a>
+            <a href="{% url 'AdminApp-display_personal_training' user_id=user_id %}">View Personal Training Sessions</a>
+            <a href="{% url 'AdminApp-display_group_fitness' user_id=user_id %}">View Group Fitness Classes</a>
+            <a href="{% url 'AdminApp-equipment_maintenance' user_id=user_id %}">Equipment</a>
+        </div>
                 </div>
 
   

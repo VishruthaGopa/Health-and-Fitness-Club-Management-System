@@ -28,7 +28,7 @@ def home(request):
                 elif user_info['role'] == 'trainer':
                     return redirect('TrainerApp-trainer_profile', user_id=user_info['user_id'])
                 elif user_info['role'] == 'admin':
-                    return redirect('AdminApp-home') 
+                    return redirect('AdminApp-home', user_id=user_info['user_id']) 
 
             else:
                 print("Incorrect username or password.")

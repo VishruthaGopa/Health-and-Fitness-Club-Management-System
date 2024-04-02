@@ -1,0 +1,19 @@
+{% extends "AdminApp/base.html" %}
+
+{% block content %}
+<h1>Update Equipment Maintenance</h1>
+<form method="post" action="{% url 'AdminApp-submit_equipment_update' equipment_id=equipment.0 user_id=user_id %}">
+    {% csrf_token %}
+    <label for="last_maintained_date">Last Maintained Date:</label>
+    <input type="date" id="last_maintained_date" name="last_maintained_date" value="{{ equipment.2 }}">
+    <br>
+    <label for="next_maintenance_date">Next Maintenance Date:</label>
+    <input type="date" id="next_maintenance_date" name="next_maintenance_date" value="{{ equipment.3 }}">
+    <br>
+    <label for="performed_by">Performed By:</label>
+    <input type="text" id="performed_by" name="performed_by" value="{{ equipment.4 }}">
+    <br>
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}
+

@@ -10,23 +10,48 @@
         <th>Member Name</th>
         <th>Session Date</th>
         <th>Session Time</th>
+        <th>Duration</th>
         <th>Room Name</th>
-        <th>Action</th>
+        <th>Payment status</th>
+        <th>Cancel</th>
+        <th>Refund</th>
     </tr>
     {% for session in personal_sessions %}
     <tr>
         <td>{{ session.0 }}</td>
-        <td>{{ session.1.1 }} {{ session.1.2 }}</td>
-        <td>{{ session.2.1}} {{ session.2.2 }}</td>
-        <td>{{ session.3 }}</td>
+        <td>{{ session.1 }}  {{session.2}}</td>
+        <td>
+            {% if session.3 and session.4 %}
+                {{ session.3 }} {{ session.4 }}
+            {% else %}
+               
+            {% endif %}
+        </td>
         <td>{{ session.5 }}</td>
         <td>{{ session.6 }}</td>
+        <td>{{ session.7 }}</td>
+        <td>{{ session.8 }}</td>
         <td>
-            <form method="post" action="{% url 'cancel_personal_training' session.0 %}">
+            {% if session.10 %}
+                Paid
+            {% else %}
+                Unpaid
+            {% endif %}
+        </td>
+
+        <td>
+            <form method="post" action="{% url 'AdminApp-cancel_personal_training' session_id=session.0 user_id=user_id %}">
                 {% csrf_token %}
-                <button type="submit">Cancel</button>
+                <button type="submit" class="btn btn-danger">Cancel</button>
             </form>
         </td>
+        <td>
+            <form method="post" action="{% url 'AdminApp-refund' session_id=session.0 user_id=user_id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Refund</button>
+            </form>
+        </td>
+  
     </tr>
     {% endfor %}
 </table>

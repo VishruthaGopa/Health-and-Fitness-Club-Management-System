@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>Admin Profile</title>
+    <title>Add Member</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -64,7 +64,7 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-        button[type="update"] {
+        button[type="submit"] {
             background-color: #0A192F;
             color: white;
             padding: 10px 15px;
@@ -78,41 +78,41 @@
     </style>
 </head>
 <body>
-    <!-- Navigation bar -->
-    <div class="navbar">
-        <div class="navbar-right">
-            <a href="{% url 'AdminApp-home' user_id=user_id %}">Home</a>
-            <a href="{% url 'AdminApp-display_members' user_id=user_id %}">View Members</a>
-            <a href="{% url 'AdminApp-trainers' user_id=user_id %}">View Trainers</a>
-            <a href="{% url 'AdminApp-display_room_bookings' user_id=user_id %}">View Room Bookings</a>
-            <a href="{% url 'AdminApp-display_personal_training' user_id=user_id %}">View Personal Training Sessions</a>
-            <a href="{% url 'AdminApp-display_group_fitness' user_id=user_id %}">View Group Fitness Classes</a>
-            <a href="{% url 'AdminApp-equipment_maintenance' user_id=user_id %}">Equipment</a>
-        </div>
-    </div>
-
-
-
 <!-- Trainer Profile -->
-<<div class="profile-container">
-    <h2 style="text-align: center;">Admin Profile</h2>
-    <form method="post" action="{% url 'AdminApp-update_profile' user_id=user_id %}">       
+<div class="profile-container">
+    <h2 style="text-align: center;">Trainer</h2>
+    <form method="post" action="{% url 'AdminApp-addTrainer' user_id=user_id %}">
         {% csrf_token %}
         <label for="first_name"><strong>First Name:</strong></label>
-        <input type="text" id="first_name" name="first_name" value="{{ admin_data.0.1 }}" required><br>
+        <input type="text" id="first_name" name="first_name" required><br>
+        
         <label for="last_name"><strong>Last Name:</strong></label>
-        <input type="text" id="last_name" name="last_name" value="{{ admin_data.0.2 }}" required><br>
-        <label for="email"><strong>Email:</strong></label>
-        <input type="email" id="email" name="email" value="{{ admin_data.0.3 }}" required><br>
-        <label for="phone"><strong>Phone Number:</strong></label>
-        <input type="tel" id="phone" name="phone" value="{{ admin_data.0.4 }}"><br>
+        <input type="text" id="last_name" name="last_name" required><br>
 
-                
-        <button type="update">Update</button>
+        <label for="username"><strong>Username:</strong></label>
+        <input type="text" id="username" name="username" required><br>
+    
+        
+        <label for="email"><strong>Email:</strong></label>
+        <input type="email" id="email" name="email" required><br>
+        
+        <label for="phone"><strong>Phone Number:</strong></label>
+        <input type="tel" id="phone" name="phone" required><br>
+
+        <label for="specializations"><strong>Specializations:</strong></label><br>
+        {% for specialization in specializations %}
+            <label>&nbsp;&nbsp;
+                <input type="checkbox" id="{{ specialization|lower }}" name="specializations" value="{{ specialization }}">
+                {{ specialization }}
+            </label><br>
+        {% endfor %}
+
+        
+        <button type="submit">Add New Trainer</button>
     </form>
+    
 </div>
 
 
 </body>
 </html>
-

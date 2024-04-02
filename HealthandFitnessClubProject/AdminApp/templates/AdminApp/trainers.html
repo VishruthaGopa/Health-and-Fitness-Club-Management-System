@@ -1,0 +1,38 @@
+{%extends "AdminApp/base.html"%}
+
+
+{%block content%}
+
+<h1>Trainers</h1>
+<form method="get" action="{% url 'AdminApp-addTrainer' user_id=user_id %}">
+    {% csrf_token %}
+    <button type="submit">Add Trainer</button>
+</form>
+<table class="table">
+    <tr>
+        <th>Trainer ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Phone Number</th>
+        <th>Specializations</th>
+    </tr>
+    {% for trainers in trainers %}
+    <tr>
+        <td>{{ trainers.0 }}</td>
+        <td>{{ trainers.1}}</td>
+        <td>{{ trainers.2 }}</td>
+        <td>{{ trainers.3 }}</td>
+        <td>{{ trainers.4 }}</td>
+        <td>
+            <ul>
+                {% for specialization in trainers.5 %}
+                <li>{{ specialization }}</li>
+                {% endfor %}
+            </ul>
+        </td>
+        
+    </tr>
+    {% endfor %}
+</table>
+{%endblock content%}

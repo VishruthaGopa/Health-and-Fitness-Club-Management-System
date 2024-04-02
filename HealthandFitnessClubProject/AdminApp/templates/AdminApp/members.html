@@ -2,7 +2,12 @@
 
 
 {%block content%}
+
 <h1>Members</h1>
+<form method="get" action="{% url 'AdminApp-addMember' user_id=user_id %}">
+    {% csrf_token %}
+    <button type="submit">Add Member</button>
+</form>
 <table class="table">
     <tr>
         <th>Member ID</th>

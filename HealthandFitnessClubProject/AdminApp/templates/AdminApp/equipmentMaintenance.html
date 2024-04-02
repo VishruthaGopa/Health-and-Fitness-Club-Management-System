@@ -1,0 +1,30 @@
+{%extends "AdminApp/base.html"%}
+
+{%block content%}
+<h1>Equipment Maintenance</h1>
+<table class="table">
+    <tr>
+        <th>Equipment ID</th>
+        <th>Equipment Name</th>
+        <th>Last Maintained Date</th>
+        <th>Next Maintenance Date</th>
+        <th>Performed By</th>
+        <th>Update</th>
+    </tr>
+    {% for equipments in equipment %}
+    <tr>
+        <td>{{ equipments.0 }}</td>
+        <td>{{ equipments.1 }}</td>
+        <td>{{ equipments.2 }}</td>
+        <td>{{ equipments.3 }}</td>
+        <td>{{ equipments.4 }}</td>
+        <td>
+            <form method="post" action="{% url 'AdminApp-update_equipment' equipment_id=equipments.0 user_id=user_id %}">
+                {% csrf_token %}
+                <button type="submit">Update</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{%endblock content%}
