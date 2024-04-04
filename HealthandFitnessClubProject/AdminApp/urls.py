@@ -16,6 +16,8 @@ urlpatterns = [
     path('addMember/<int:user_id>/', views.addMember, name='AdminApp-addMember'),
     path('refundPersonalTraining/<int:session_id>/<int:user_id>/', views.refundPersonalTraining, name='AdminApp-refund'),
     path('trainers/<int:user_id>/', views.display_trainers, name='AdminApp-trainers'),
-    path('addTrainer/<int:user_id>/', views.addTrainer, name='AdminApp-addTrainer')
+    path('addTrainer/<int:user_id>/', views.addTrainer, name='AdminApp-addTrainer'),
+    path('deleteEquipment/<int:equipment_id>/<int:user_id>/', views.deleteEquipment, name='AdminApp-deleteEquipment'),
+    path('addEquipment/<int:user_id>/', views.addEquipment, name='AdminApp-addEquipment'),
 ]   
 

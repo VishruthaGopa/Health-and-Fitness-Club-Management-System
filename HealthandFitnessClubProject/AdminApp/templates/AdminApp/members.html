@@ -8,6 +8,13 @@
     {% csrf_token %}
     <button type="submit">Add Member</button>
 </form>
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div{% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: red;">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
 <table class="table">
     <tr>
         <th>Member ID</th>
@@ -32,7 +39,11 @@
         <td>{{ member.6 }}</td>
         <td>{{ member.7 }}</td>
         <td>{{ member.8 }}</td>
-        <td>{{ member.9 }}</td>
+        <td>{% if member.9 %}
+            Paid
+        {% else %}
+            Unpaid
+        {% endif %}</td>
     </tr>
     {% endfor %}
 </table>

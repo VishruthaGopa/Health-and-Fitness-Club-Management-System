@@ -2,7 +2,11 @@ from django.shortcuts import render, redirect
 import psycopg2
 from HealthandFitnessClubProject.databaseConnection import connect
 from django.shortcuts import HttpResponse
+from django.contrib import messages
 
+
+
+#trainer home and updating profile functions:
 def home(request, user_id):
     connection = connect()
     cursor = connection.cursor()
@@ -29,7 +33,8 @@ def updateProfile(request, user_id):
             connection.commit()
             connection.close()
         except Exception as e:
-            return HttpResponse(f"Error updating equipment: {e}")
+            messages.add_message(request, messages.ERROR, f"Update unsuccessful!")
+            return redirect('AdminApp-home', user_id=user_id)
 
         return redirect('AdminApp-home', user_id=user_id)
     return redirect('AdminApp-home', user_id=user_id)
@@ -37,7 +42,7 @@ def updateProfile(request, user_id):
 
 
 
-
+#Member related functions 
 def addMember(request, user_id):
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
@@ -67,13 +72,23 @@ def addMember(request, user_id):
             return redirect('AdminApp-display_members', user_id=user_id)
 
         except Exception as e:
-          
-            import traceback
-            traceback.print_exc()
-            return HttpResponse(f"Error: {e}")
+          messages.add_message(request, messages.ERROR, f"Update unsuccessful!")
+          return redirect('AdminApp-display_members', user_id=user_id)
     return render(request, 'AdminApp/addMember.html', {'user_id': user_id})
 
 
+def display_members(request, user_id):
+    connection = connect()
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM Member")
+    members = cursor.fetchall()
+    connection.close()
+    return render(request, 'AdminApp/members.html', {'members': members, 'user_id': user_id})
+
+
+
+
+#personal training related functions 
 def refundPersonalTraining(request, session_id, user_id):
     if request.method == 'POST':
         try:
@@ -83,7 +98,8 @@ def refundPersonalTraining(request, session_id, user_id):
             connection.commit()
             connection.close()
         except Exception as e:
-            return HttpResponse(f"Error")
+            messages.add_message(request, messages.ERROR, f"Refund unsuccessful!")
+            return redirect('AdminApp-display_personal_training', user_id=user_id)
 
         return redirect('AdminApp-display_personal_training', user_id=user_id)
 
@@ -102,22 +118,24 @@ def display_personal_fitness_classes(request, user_id):
     connection.close()
     return render(request, 'AdminApp/personal_fitness_classes.html', {'personal_sessions': personal_sessions, 'user_id': user_id})
 
-def display_room_bookings(request, user_id):
-    connection = connect()
-    cursor = connection.cursor()
-    cursor.execute("SELECT * FROM Room_Bookings")
-    room_bookings = cursor.fetchall()
-    connection.close()
-    return render(request, 'AdminApp/room_bookings.html', {'room_bookings': room_bookings, 'user_id': user_id})
 
-def display_members(request, user_id):
-    connection = connect()
-    cursor = connection.cursor()
-    cursor.execute("SELECT * FROM Member")
-    members = cursor.fetchall()
-    connection.close()
-    return render(request, 'AdminApp/members.html', {'members': members, 'user_id': user_id})
+def cancel_personal_training(request, user_id, session_id):
+    if request.method == 'POST':
+        try:
+            connection = connect()
+            cursor = connection.cursor()
+            cursor.execute("DELETE FROM Personal_Training_Sessions WHERE session_id = %s", [session_id])
+            connection.commit()
+            connection.close()
+            return redirect('AdminApp-display_personal_training', user_id=user_id)
+        except Exception as e:
+            messages.add_message(request, messages.ERROR, f"Cancellation unsuccessful!")
+            return redirect('AdminApp-display_personal_training', user_id=user_id)
+    return redirect('AdminApp-display_personal_training', user_id=user_id)
 
+
+
+#group fitness related functions
 def display_group_fitness(request, user_id):
     connection = connect()
     cursor = connection.cursor()
@@ -139,24 +157,26 @@ def cancel_group_fitness(request, user_id, class_id):
             connection.close()
             return redirect('AdminApp-display_group_fitness', user_id=user_id)
         except Exception as e:
-            pass  # Handle case where the class does not exist
+            messages.add_message(request, messages.ERROR, f"Cancellation unsuccessful!")
+            return redirect('AdminApp-display_group_fitness', user_id=user_id)
     return redirect('AdminApp-display_group_fitness', user_id=user_id)
 
 
-def cancel_personal_training(request, user_id, session_id):
-    if request.method == 'POST':
-        try:
-            connection = connect()
-            cursor = connection.cursor()
-            cursor.execute("DELETE FROM Personal_Training_Sessions WHERE session_id = %s", [session_id])
-            connection.commit()
-            connection.close()
-            return redirect('AdminApp-display_personal_training', user_id=user_id)
-        except Exception as e:
-            pass  # Handle case where the class does not exist
-    return redirect('AdminApp-display_personal_training', user_id=user_id)
 
 
+#room booking functions
+def display_room_bookings(request, user_id):
+    connection = connect()
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM Room_Bookings")
+    room_bookings = cursor.fetchall()
+    connection.close()
+    return render(request, 'AdminApp/room_bookings.html', {'room_bookings': room_bookings, 'user_id': user_id})
+
+
+
+
+#equipment related functions
 def display_equipment_maintenance(request, user_id):
     connection = connect()
     cursor = connection.cursor()
@@ -174,7 +194,7 @@ def update_equipment(request, user_id, equipment_id):
         equipment = cursor.fetchone()  # Assuming there's only one equipment with the given ID
         connection.close()
         return render(request, 'AdminApp/updateEquipment.html', {'equipment': equipment, 'user_id': user_id})
-    return HttpResponse("This view is intended for handling POST requests only.")
+    return render(request, 'AdminApp/updateEquipment.html', {'equipment': equipment, 'user_id': user_id})
 
 
 def submit_equipment_update(request, user_id, equipment_id):
@@ -191,15 +211,61 @@ def submit_equipment_update(request, user_id, equipment_id):
             connection.commit()
             connection.close()
         except Exception as e:
-            return HttpResponse(f"Error updating equipment: {e}")
+            messages.add_message(request, messages.ERROR, f"Update unsuccessful!")
+            return redirect('AdminApp-equipment_maintenance', user_id=user_id)
 
         return redirect('AdminApp-equipment_maintenance', user_id=user_id)
 
     return redirect('AdminApp-equipment_maintenance', user_id=user_id)
 
 
+def deleteEquipment(request, equipment_id, user_id):
+        if request.method == 'POST':
+            try:
+                connection = connect()
+                cursor = connection.cursor()
+                cursor.execute("DELETE FROM Equipment_Maintenance WHERE equipment_id = %s", [equipment_id])
+                connection.commit()
+                connection.close()
+                return redirect('AdminApp-equipment_maintenance', user_id=user_id)
+
+            except Exception as e:
+                messages.add_message(request, messages.ERROR, f"Delete unsuccessful!")
+                return redirect('AdminApp-equipment_maintenance', user_id=user_id)
+
+        return redirect('AdminApp-equipment_maintenance', user_id=user_id)
 
 
+
+
+def addEquipment(request, user_id):
+    if request.method == 'POST':
+        equipment_name = request.POST.get('equipment_name')
+
+        try:
+            connection = connect()
+            cursor = connection.cursor()
+           
+            
+            cursor.execute('INSERT INTO Equipment_Maintenance (equipment_name) ' +
+               'VALUES (%s)', 
+               [equipment_name])
+            connection.commit()
+
+            connection.close()
+            return redirect('AdminApp-equipment_maintenance', user_id=user_id)
+
+        except Exception as e:
+            messages.add_message(request, messages.ERROR, f"Update unsuccessful!")
+            return redirect('AdminApp-equipment_maintenance', user_id=user_id)
+            
+    return render(request, 'AdminApp/addEquipment.html', {'user_id': user_id})
+
+
+
+
+
+#trainer related functions
 def display_trainers(request, user_id):
     connection = connect()
     cursor = connection.cursor()
@@ -235,9 +301,10 @@ def addTrainer(request, user_id):
             connection.close()
             return redirect('AdminApp-trainers', user_id=user_id)
 
+
         except Exception as e:
-          
-            import traceback
-            traceback.print_exc()
-            return HttpResponse(f"Error: {e}")
+            messages.add_message(request, messages.ERROR, f"Update unsuccessful!")
+            return redirect('AdminApp-trainers', user_id=user_id)
+            
     return render(request, 'AdminApp/addTrainer.html', {'user_id': user_id, 'specializations':specializations})
+

@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>Admin Profile</title>
+    <title>Add Equipment</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -73,53 +72,25 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        button[type="submit"]:hover {
+        button[type="update"]:hover {
             background-color: #063974;
         }
     </style>
 </head>
 <body>
-    <!-- Navigation bar -->
-    <div class="navbar">
-        <div class="navbar-right">
-            <a href="{% url 'AdminApp-home' user_id=user_id %}">Home</a>
-            <a href="{% url 'AdminApp-display_members' user_id=user_id %}">View Members</a>
-            <a href="{% url 'AdminApp-trainers' user_id=user_id %}">View Trainers</a>
-            <a href="{% url 'AdminApp-display_room_bookings' user_id=user_id %}">View Room Bookings</a>
-            <a href="{% url 'AdminApp-display_personal_training' user_id=user_id %}">View Personal Training Sessions</a>
-            <a href="{% url 'AdminApp-display_group_fitness' user_id=user_id %}">View Group Fitness Classes</a>
-            <a href="{% url 'AdminApp-equipment_maintenance' user_id=user_id %}">Equipment</a>
-        </div>
-    </div>
-
-
-
-<!-- Trainer Profile -->
+<!-- Equipment -->
 <div class="profile-container">
-    <h2 style="text-align: center;">Update Equipment Maintenance</h2>
-    <form method="post" action="{% url 'AdminApp-submit_equipment_update' equipment_id=equipment.0 user_id=user_id %}">
-    {% csrf_token %}
-    <label for="last_maintained_date">Last Maintained Date:</label>
-    <input type="date" id="last_maintained_date" name="last_maintained_date" value="{{ equipment.2 }}">
-    <br>
-    <label for="next_maintenance_date">Next Maintenance Date:</label>
-    <input type="date" id="next_maintenance_date" name="next_maintenance_date" value="{{ equipment.3 }}">
-    <br>
-    <label for="performed_by">Performed By:</label>
-    <input type="text" id="performed_by" name="performed_by" value="{{ equipment.4 }}">
-    <br>
-    <button type="submit">Submit</button>
-</form>
-<br>
-<br>
-
-<form method="post" action="{% url 'AdminApp-deleteEquipment' equipment_id=equipment.0 user_id=user_id %}">
-    {% csrf_token %}
-    <button type="submit">Delete Equipment</button>
-</form>
+    <h2 style="text-align: center;">Member</h2>
+    <form method="post" action="{% url 'AdminApp-addEquipment' user_id=user_id %}">
+        {% csrf_token %}
+        <label for="equipment_name"><strong>Equipment Name:</strong></label>
+        <input type="text" id="equipment_name" name="equipment_name" required><br>
+        
+        <button type="submit">Add New Equipment</button>
+    </form>
+    
 </div>
 
 
 </body>
 </html>
-

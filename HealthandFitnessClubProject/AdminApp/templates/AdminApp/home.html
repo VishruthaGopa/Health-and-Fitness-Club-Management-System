@@ -94,7 +94,7 @@
 
 
 <!-- Trainer Profile -->
-<<div class="profile-container">
+<div class="profile-container">
     <h2 style="text-align: center;">Admin Profile</h2>
     <form method="post" action="{% url 'AdminApp-update_profile' user_id=user_id %}">       
         {% csrf_token %}
@@ -106,7 +106,13 @@
         <input type="email" id="email" name="email" value="{{ admin_data.0.3 }}" required><br>
         <label for="phone"><strong>Phone Number:</strong></label>
         <input type="tel" id="phone" name="phone" value="{{ admin_data.0.4 }}"><br>
-
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div{% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: red;">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
                 
         <button type="update">Update</button>
     </form>
