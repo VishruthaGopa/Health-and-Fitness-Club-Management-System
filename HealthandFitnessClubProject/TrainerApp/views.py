@@ -18,7 +18,23 @@ def displayMembers(search_query=None):
     cursor = connection.cursor()
     if search_query:  # Check if search_query is not empty
         # ILIKE operator to search for names containing the search query -> not case-sensitive
-        cursor.execute("SELECT * FROM \"User\" WHERE role = 'member' AND username ILIKE %s", ('%' + search_query + '%',))
+        cursor.execute("""
+            SELECT 
+                U.*, 
+                M.email, 
+                CONCAT(M.first_name, ' ', M.last_name) AS full_name, 
+                M.gender, 
+                M.date_of_birth 
+            FROM 
+                "User" U 
+            INNER JOIN 
+                Member M ON U.user_id = M.member_id 
+            WHERE 
+                U.role = 'member' AND 
+                (U.username ILIKE %s OR 
+                M.first_name ILIKE %s OR 
+                M.last_name ILIKE %s)
+        """, ('%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%'))
     else:
         cursor.execute("""
             SELECT 
