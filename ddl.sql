@@ -93,10 +93,10 @@ CREATE TABLE IF NOT EXISTS Personal_Training_Sessions (
     member_id INTEGER,
     session_date DATE,
     session_time TIME,
-    duration INTERVAL,
+    duration INTERVAL DEFAULT '1 hour', -- Set default duration to 1 hour
     room_id INTEGER,
     price DECIMAL,
-    payment_status BOOLEAN,
+    payment_status BOOLEAN DEFAULT NULL, -- Set default payment_status to NULL
     FOREIGN KEY (trainer_id) REFERENCES Trainer(trainer_id),
     FOREIGN KEY (member_id) REFERENCES Member(member_id),
     FOREIGN KEY (room_id) REFERENCES Room_Bookings(room_id)

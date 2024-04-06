@@ -91,23 +91,47 @@ DROP TABLE TimeSlots;
 
 
 -- Personal_Training_Sessions table
-INSERT INTO Personal_Training_Sessions (trainer_id, member_id, session_date, session_time, duration, room_id, price, payment_status) VALUES
-(4, NULL, '2024-03-26', '11:00:00', '1 hour', 1, 35.00, true),
-(5, 1, '2024-03-27', '16:00:00', '1 hour', 2, 45.00, true),
-(4, NULL, '2024-03-28', '12:00:00', '1 hour', 1, 40.00, true),
-(5, 2, '2024-03-29', '17:00:00', '1 hour', 2, 50.00, true),
-(4, NULL, '2024-03-30', '13:00:00', '1 hour', 1, 30.00, true),
-(5, 1, '2024-03-31', '18:00:00', '1 hour', 2, 40.00, true),
-(4, NULL, '2024-04-01', '14:00:00', '1 hour', 1, 35.00, true),
-(5, 2, '2024-04-02', '19:00:00', '1 hour', 2, 45.00, true),
-(4, NULL, '2024-04-03', '15:00:00', '1 hour', 1, 40.00, true),
-(5, 1, '2024-04-04', '20:00:00', '1 hour', 2, 50.00, true);
+INSERT INTO Personal_Training_Sessions (trainer_id, member_id, session_date, session_time, room_id, price, payment_status) VALUES
+(4, NULL, CURRENT_DATE + INTERVAL '1' DAY, '16:00:00', 1, 35.00, NULL),
+(5, 2, CURRENT_DATE + INTERVAL '1' DAY, '18:00:00', 9, 35.00, true),
+(5, 1, CURRENT_DATE + INTERVAL '1' DAY, '20:00:00', 14, 50.00, true),
+(4, NULL, CURRENT_DATE + INTERVAL '2' DAY, '17:00:00', 23, 45.00, NULL),
+(5, 2, CURRENT_DATE + INTERVAL '2' DAY, '19:00:00', 28, 45.00, true),
+(5, 1, CURRENT_DATE + INTERVAL '2' DAY, '21:00:00', 36, 40.00, true),
+(4, NULL, CURRENT_DATE + INTERVAL '3' DAY, '18:00:00', 45, 40.00, NULL),
+(5, 1, CURRENT_DATE + INTERVAL '3' DAY, '20:00:00', 51, 50.00, true),
+(4, NULL, CURRENT_DATE + INTERVAL '3' DAY, '21:00:00', 52, 40.00, NULL);
 
 -- Group_Fitness_Classes table
 INSERT INTO Group_Fitness_Classes (trainer_id, room_id, class_name, description, session_date, session_time, member_ids) VALUES
-(4, 1, 'Evening Pilates', 'Pilates class for all levels', '2024-03-26', '19:00:00', '{1, 2}'),
-(5, 2, 'Cardio Blast', 'High-intensity cardio workout', '2024-03-27', '20:00:00', '{2}'),
-(4, 1, 'Morning Bootcamp', 'Bootcamp-style workout session', '2024-03-28', '07:00:00', '{1}'),
-(5, 2, 'Strength Training', 'Focus on building strength and muscle', '2024-03-29', '21:00:00', '{1, 2}'),
-(5, 2, 'Cardio', 'cardio workout', '2024-04-04', '13:00:00', '{}');
+(4, 4, 'Evening Pilates', 'Pilates class for all levels', CURRENT_DATE + INTERVAL '1' DAY, '17:00:00', '{1, 2}'),
+(5, 18, 'Strength Training', 'Focus on building strength and muscle', CURRENT_DATE + INTERVAL '1' DAY, '21:00:00', '{1, 2}'),
+(5, 25, 'Cardio Blast', 'High-intensity cardio workout', CURRENT_DATE + INTERVAL '2' DAY, '18:00:00', '{2}'),
+(5, 29, 'Cardio', 'Cardio workout', CURRENT_DATE + INTERVAL '2' DAY, '19:00:00', '{}'),
+(4, 44, 'Morning Bootcamp', 'Bootcamp-style workout session', CURRENT_DATE + INTERVAL '3' DAY, '18:00:00', '{1}');
 
+
+-- Update the booked status in Room_Bookings based on Personal_Training_Sessions
+UPDATE Room_Bookings AS rb
+SET booked = TRUE
+FROM Personal_Training_Sessions AS pts
+WHERE rb.room_id = pts.room_id
+  AND rb.time = pts.session_time
+  AND rb.date = pts.session_date;
+
+-- Update the booked status in Room_Bookings based on Group_Fitness_Classes
+UPDATE Room_Bookings AS rb
+SET booked = TRUE
+FROM Group_Fitness_Classes AS gfc
+WHERE rb.room_id = gfc.room_id
+  AND rb.time = gfc.session_time
+  AND rb.date = gfc.session_date;
+  
+-- Equipment_Maintenance table
+INSERT INTO Equipment_Maintenance (equipment_name, last_maintained_date, next_maintenance, performed_by) VALUES
+('Treadmill', '2024-01-01', '2024-04-01', 3),
+('Exercise Bike', '2024-02-15', '2024-04-15', 3),
+('Dumbbells Set', '2024-03-20', '2024-04-20', 3),
+('Leg Press Machine', '2024-01-03', '2024-04-03', 3),
+('Chest Press Machine', '2024-01-14', '2024-04-14', 3),
+('Rowing Machine', '2024-01-10', '2024-04-10', 3);
