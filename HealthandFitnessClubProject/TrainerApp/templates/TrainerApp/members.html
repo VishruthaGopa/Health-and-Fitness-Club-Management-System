@@ -123,16 +123,22 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Name</th>
+                <th>Username</th>
+                <th>Full Name</th>
                 <th>Email</th>
+                <th>Gender</th>
+                <th>Date of Birth</th>
             </tr>
         </thead>
         <tbody>
             {% for user in users %}
             <tr>
                 <td>{{ user.0 }}</td> <!-- ID -->
-                <td>{{ user.1 }}</td> <!-- Name -->
-                <td>{{ user.2 }}</td> <!-- Email -->
+                <td>{{ user.1 }}</td> <!-- Username -->
+                <td>{{ user.5 }}</td> <!-- Full Name -->
+                <td>{{ user.4 }}</td> <!-- Email -->
+                <td>{{ user.6 }}</td> <!-- Gender -->
+                <td>{{ user.7 }}</td> <!-- Date of Birth -->
             </tr>
             {% endfor %}
         </tbody>

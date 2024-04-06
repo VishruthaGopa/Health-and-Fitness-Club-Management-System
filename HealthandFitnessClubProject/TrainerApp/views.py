@@ -20,7 +20,20 @@ def displayMembers(search_query=None):
         # ILIKE operator to search for names containing the search query -> not case-sensitive
         cursor.execute("SELECT * FROM \"User\" WHERE role = 'member' AND username ILIKE %s", ('%' + search_query + '%',))
     else:
-        cursor.execute("SELECT * FROM \"User\" WHERE role = 'member'")
+        cursor.execute("""
+            SELECT 
+                U.*, 
+                M.email, 
+                CONCAT(M.first_name, ' ', M.last_name) AS full_name, 
+                M.gender, 
+                M.date_of_birth 
+            FROM 
+                "User" U 
+            INNER JOIN 
+                Member M ON U.user_id = M.member_id 
+            WHERE 
+                U.role = 'member'
+        """)
     users = cursor.fetchall()
     connection.close()
     return users
@@ -171,6 +184,7 @@ def fetch_classes(user_id):
             GFC.session_time, 
             RB.room_name, 
             RB.room_location;
+
     """
 
     # Execute the query with the given user_id
