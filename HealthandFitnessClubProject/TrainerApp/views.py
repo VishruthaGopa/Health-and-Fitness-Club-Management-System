@@ -96,5 +96,102 @@ def get_trainer_data(trainer_id):
     return trainer_data
 
 
+# Define a helper function to execute the SQL query and fetch data
+def fetch_personal_sessions(user_id):
+    # Establish connection
+    connection = connect()
+    cursor = connection.cursor()
+
+    # SQL query
+    sql_query = """
+        SELECT 
+            PTS.session_id, 
+            CONCAT(M.first_name, ' ', M.last_name) AS member_name,
+            PTS.session_date, 
+            PTS.session_time, 
+            PTS.duration, 
+            RB.room_name, 
+            RB.room_location, 
+            PTS.price,
+            PTS.payment_status 
+        FROM 
+            Personal_Training_Sessions PTS 
+        JOIN 
+            Trainer TR ON PTS.trainer_id = TR.trainer_id 
+        LEFT OUTER JOIN 
+            Member M ON PTS.member_id = M.member_id 
+        JOIN 
+            Room_Bookings RB ON PTS.room_id = RB.room_id
+        WHERE 
+            PTS.trainer_id = %s;
+    """
+
+    # Execute the query with the given user_id
+    cursor.execute(sql_query, (user_id,))
+
+    # Fetch all records
+    personal_sessions = cursor.fetchall()
+
+    # Close the database connection
+    connection.close()
+
+    # Return fetched data
+    return personal_sessions
+
+# Define a helper function to execute the SQL query and fetch classes
+def fetch_classes(user_id):
+    # Establish connection
+    connection = connect()
+    cursor = connection.cursor()
+
+    # SQL query
+    sql_query = """
+        SELECT 
+            GFC.class_name,
+            GFC.description,
+            GFC.session_date, 
+            GFC.session_time, 
+            RB.room_name, 
+            RB.room_location,
+            ARRAY_AGG(CONCAT(M.first_name, ' ', M.last_name)) AS member_names
+        FROM 
+            Group_Fitness_Classes GFC
+        JOIN 
+            Trainer TR ON GFC.trainer_id = TR.trainer_id 
+        JOIN 
+            Room_Bookings RB ON GFC.room_id = RB.room_id
+        LEFT JOIN 
+            Member M ON M.member_id IN (SELECT UNNEST(GFC.member_ids))
+        WHERE 
+            GFC.trainer_id = %s
+        GROUP BY 
+            GFC.class_name,
+            GFC.description,
+            GFC.session_date, 
+            GFC.session_time, 
+            RB.room_name, 
+            RB.room_location;
+    """
+
+    # Execute the query with the given user_id
+    cursor.execute(sql_query, (user_id,))
+
+    # Fetch all records
+    classes = cursor.fetchall()
+
+    # Close the database connection
+    connection.close()
+
+    # Return fetched data
+    return classes
+
+# Define the view function
 def sessions_classes(request, user_id):
-    return render(request, 'TrainerApp/sessions_classes.html', {'user_id': user_id})
+    # Fetch personal sessions using the helper function
+    personal_sessions = fetch_personal_sessions(user_id)
+
+    # Fetch classes using the helper function
+    classes = fetch_classes(user_id)
+
+    # Render the template with the fetched data
+    return render(request, 'TrainerApp/sessions_classes.html', {'user_id': user_id, 'personal_training_sessions': personal_sessions, 'group_classes': classes})

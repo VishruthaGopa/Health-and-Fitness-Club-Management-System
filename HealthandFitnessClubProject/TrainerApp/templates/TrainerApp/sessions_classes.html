@@ -87,6 +87,32 @@
         button[type="submit"]:hover {
             background-color: #063974;
         }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+            text-transform: uppercase;
+        }
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+                /* New styles for the search form */
+                .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
     </style>
 </head>
 <body>
@@ -103,6 +129,80 @@
             <a href="#role">Welcome, Trainer!</a>
         </div>
     </div>
+
+<!-- Viewing section for Personal Training Sessions -->
+<div class="container">
+    <h2>View Your Personal Training Sessions</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Session ID</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Duration</th>
+                <th>Room Name</th>
+                <th>Room Location</th>
+                <th>Price</th>
+                <th>Member Registered</th>
+                <th>Payment Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop through personal training sessions from the database and populate the table -->
+            {% for session in personal_training_sessions %}
+            <tr>
+                <td>{{ session.0 }}</td>
+                <td>{{ session.2 }}</td>
+                <td>{{ session.3 }}</td>
+                <td>{{ session.4 }}</td>
+                <td>{{ session.5 }}</td>
+                <td>{{ session.6 }}</td>
+                <td>{{ session.7 }}</td>
+                <td>{{ session.1 }}</td>
+                <td>{{ session.8 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<!-- Viewing section for Group Fitness Classes -->
+<div class="container">
+    <h2>View Your Group Fitness Classes</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Class Name</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Room</th>
+                <th>Location</th>
+                <th>Members Registered</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop through group fitness classes from the database and populate the table -->
+            {% for class in group_classes %}
+            <tr>
+                <td>{{ class.0 }}</td>
+                <td>{{ class.1 }}</td>
+                <td>{{ class.2 }}</td>
+                <td>{{ class.3 }}</td>
+                <td>{{ class.4 }}</td>
+                <td>{{ class.5 }}</td>
+                <td>
+                    <!-- Loop through the member names and display them -->
+                    {% for member_name in class.6 %}
+                        {{ member_name }}<br>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
     <!-- SESSIONS AND CLASSES -->
     <div class="container">
