@@ -46,6 +46,7 @@
             padding: 0 20px;
         }
         form {
+            display: none; /* Initially hide the forms */
             background-color: #fff;
             padding: 20px;
             margin-bottom: 20px;
@@ -157,7 +158,7 @@
                 <td>{{ session.4 }}</td>
                 <td>{{ session.5 }}</td>
                 <td>{{ session.6 }}</td>
-                <td>{{ session.7 }}</td>
+                <td>${{ session.7 }}</td>
                 <td>{{ session.1 }}</td>
                 <td>{{ session.8 }}</td>
             </tr>
@@ -204,54 +205,92 @@
     </table>
 </div>
 
-    <!-- SESSIONS AND CLASSES -->
-    <div class="container">
-        <h1>Sessions & Classes</h1>
-        
+    <!--ADDING SESSIONS AND CLASSES -->
+    <div class="container" id="sessions_classes_container">        
         <!-- Form for adding Personal Training Sessions -->
-        <form action="" method="POST">
+        <form action="" method="GET" id="session_form">
             {% csrf_token %}
             <h2>Add Personal Training Session</h2>
             <label for="session_date">Date:</label>
-            <input type="date" id="session_date" name="session_date" required><br>
-            <label for="session_time">Time:</label>
-            <input type="time" id="session_time" name="session_time" required><br>
-            <label for="duration">Duration:</label>
-            <input type="text" id="duration" name="duration" placeholder="e.g., 1 hour" required><br>
+            
+            <select id="session_date" name="session_date" required>
+                <option value="" disabled selected>Select Date</option>
+                <!-- Populate with available dates -->
+                {% for date in available_dates %}
+                    <option value="{{ date }}">{{ date }}</option>
+                {% endfor %}
+            </select><br>
+
+            <!-- Form for selecting session time -->
+            <label for="session_time">Select Time:</label>
+            <select id="session_time" name="session_time" required>
+                <option value="" disabled selected>Select Time</option>
+                <!-- Times will be populated dynamically based on selected date-->
+            </select><br>
+
+            
             <label for="room_id">Room:</label>
             <select id="room_id" name="room_id" required>
                 <option value="1">Room 1</option>
                 <option value="2">Room 2</option>
-                <!-- Rooms according to availability at speciifc time -->
+                <!-- Rooms will be populated dynamically according to availability based on selected date and time -->
             </select><br>
+
             <label for="price">Price ($):</label>
             <input type="number" id="price" name="price" min="0" step="0.01" required><br>
 
-
-            <button type="submit">Add Session</button>
+            <button type="submit">Add Session</button> 
         </form>
         
+
+
+
         <!-- Form for adding Group Fitness Classes -->
-        <form action="" method="POST">
+        <form action="" method="POST" id="class_form">
             {% csrf_token %}
             <h2>Add Group Fitness Class</h2>
             <label for="class_name">Class Name:</label>
             <input type="text" id="class_name" name="class_name" required><br>
             <label for="description">Description:</label>
             <textarea id="description" name="description" rows="4" required></textarea><br>
-            <label for="session_date">Date:</label>
-            <input type="date" id="session_date" name="session_date" required><br>
-            <label for="session_time">Time:</label>
-            <input type="time" id="session_time" name="session_time" required><br>
-            <label for="room_id">Room:</label>
-            <select id="room_id" name="room_id" required>
-                <option value="1">Room 1</option>
-                <option value="2">Room 2</option>
-                <!-- Rooms according to availability at speciifc time -->
-            </select><br>
             <button type="submit">Add Class</button>
         </form>
     </div>
 
+
+    <div class="container">
+
+        <!-- Button to add more sessions -->
+        <button type="submit" onclick="toggleSessionFormVisibility('session_form')">Add More Personal Training Sessions</button>
+    
+        <!-- Button to add more classes -->
+        <button type="submit" onclick="toggleClassFormVisibility('class_form')">Add More Group Fitness Classes</button>
+    
+    </div>
+    
+<script>
+    function toggleSessionFormVisibility(formId) {
+        var sessionForm = document.getElementById(formId);
+        var classForm = document.getElementById('class_form');
+        if (sessionForm.style.display === "none" || sessionForm.style.display === "") {
+            sessionForm.style.display = "block";
+            classForm.style.display = "none";
+        } else {
+            sessionForm.style.display = "none";
+        }
+    }
+
+    function toggleClassFormVisibility(formId) {
+        var classForm = document.getElementById(formId);
+        var sessionForm = document.getElementById('session_form');
+        if (classForm.style.display === "none" || classForm.style.display === "") {
+            classForm.style.display = "block";
+            sessionForm.style.display = "none";
+        } else {
+            classForm.style.display = "none";
+        }
+    }
+
+</script>
 </body>
 </html>

@@ -215,6 +215,38 @@ def fetch_classes(user_id):
     # Return fetched data
     return classes
 
+
+# Define a helper function to fetch available dates, times, and rooms based on Room_Bookings table
+def fetch_availability():
+    connection = connect()
+    cursor = connection.cursor()
+
+    # Fetch available dates, times, and rooms
+    cursor.execute("""
+        SELECT DISTINCT session_date FROM Room_Bookings
+        WHERE session_date >= CURRENT_DATE
+        ORDER BY session_date
+    """)
+    dates = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT DISTINCT session_time FROM Room_Bookings
+        WHERE session_date >= CURRENT_DATE
+        ORDER BY session_time
+    """)
+    times = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT DISTINCT room_id, room_name FROM Room_Bookings
+        WHERE session_date >= CURRENT_DATE
+        ORDER BY room_id
+    """)
+    rooms = cursor.fetchall()
+
+    connection.close()
+
+    return dates, times, rooms
+
 # Define the view function
 def sessions_classes(request, user_id):
     # Fetch personal sessions using the helper function
@@ -223,5 +255,90 @@ def sessions_classes(request, user_id):
     # Fetch classes using the helper function
     classes = fetch_classes(user_id)
 
-    # Render the template with the fetched data
-    return render(request, 'TrainerApp/sessions_classes.html', {'user_id': user_id, 'personal_training_sessions': personal_sessions, 'group_classes': classes})
+    selected_date = None  # Initialize selected_date variable
+
+    if request.method == 'GET':
+        selected_date = request.GET.get('session_date')  # Get the selected date from the form
+        print("Request method:", request.method)  # Debug: Print request method
+        print("GET data:", request.GET)  # Debug: Print entire GET data
+        print("Selected Date:", selected_date)  # Debug: Print the selected date
+
+    # Fetch available dates from Room_Bookings table
+    available_dates = fetch_available_dates()
+
+    return render(request, 'TrainerApp/sessions_classes.html', {'user_id': user_id, 'personal_training_sessions': personal_sessions, 'group_classes': classes, 'available_dates': available_dates})
+
+
+# Define a helper function to fetch available dates from Room_Bookings table
+def fetch_available_dates():
+    # Establish connection
+    connection = connect()
+    cursor = connection.cursor()
+
+    # SQL query to fetch distinct session dates
+    sql_query = """
+        SELECT DISTINCT date
+        FROM Room_Bookings
+        WHERE booked = false
+        ORDER BY date;
+    """
+
+    # Execute the query
+    cursor.execute(sql_query)
+
+    # Fetch all distinct dates
+    available_dates = [date[0] for date in cursor.fetchall()]
+
+    # Close the database connection
+    connection.close()
+
+    # Return available dates
+    return available_dates
+
+
+def fetch_available_times(request):
+    selected_date = request.GET['date']
+        
+    # Raw SQL query to fetch available times for the selected date
+    sql_query = """
+            SELECT DISTINCT time
+            FROM Room_Bookings
+            WHERE date = %s AND booked = false
+            ORDER BY time;
+        """
+    # Establish connection
+    connection = connect()
+    cursor = connection.cursor()
+
+    cursor.execute(sql_query, [selected_date])         # Execute the SQL query
+    available_times = [row[0] for row in cursor.fetchall()]
+
+    # Close the database connection
+    connection.close()
+
+    return available_times
+
+
+def fetch_available_rooms(request, selected_date, selected_time):
+    # Establish connection
+    connection = connect()
+    cursor = connection.cursor()
+
+    #  SQL query to fetch available rooms for the selected date, time
+    sql_query = """
+        SELECT DISTINCT room_id
+        FROM Room_Bookings
+        WHERE date = %s AND time = %s AND booked = false
+        ORDER BY room_id;
+    """
+
+    # Execute the query
+    cursor.execute(sql_query, (selected_date, selected_time))
+
+    # Fetch all distinct room IDs
+    available_rooms = [row[0] for row in cursor.fetchall()]
+
+    # Close the database connection
+    connection.close()
+
+    return available_rooms
