@@ -7,6 +7,100 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 
 
+def homePage(request, user_id):
+    user_health_data = HealthStatistics(request, user_id)
+    user_exercise_routines = ExerciseRoutines(request, user_id)
+    return render(request, 'MembersApp/homePage.html', {
+        'user_id': user_id,
+        'user_data': user_health_data,
+        'user_exercise_routines': user_exercise_routines
+    })
+
+def ExerciseRoutines(request, user_id):
+    # Execute the query with the form data
+    connection = connect()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+            SELECT routine_id, routine_name, description, duration, date_created
+            FROM exercise_routine
+            WHERE member_id = %s
+        """, [user_id])
+    user_exercise_routines = cursor.fetchall()
+    # Convert the list of tuples to a list of dictionaries
+    user_exercise_routines_dicts = []
+    for routine in user_exercise_routines:
+        routine_dict = {
+            'routine_id': routine[0],
+            'routine_name': routine[1],
+            'description': routine[2],
+            'duration': routine[3],
+            'date_created': routine[4]
+        }
+    user_exercise_routines_dicts.append(routine_dict)
+
+    
+    return user_exercise_routines_dicts
+
+def HealthStatistics(request, user_id):
+    # Execute the query with the form data
+    connection = connect()
+    cursor = connection.cursor()
+
+    # if request.method == 'POST':
+    #     update_HealthStatistics(request, user_id) 
+
+    cursor.execute("""
+            SELECT start_weight, current_weight, height, age
+            FROM Member_Health
+            WHERE member_id = %s
+        """, [user_id])
+    user_health_data = cursor.fetchone()
+    print(user_health_data)
+    # Pass the query result to the template context
+    return user_health_data
+
+def update_Health_Statistics(request, user_id):
+    if request.method == 'POST':
+        start_weight = request.POST.get('start_weight')
+        current_weight = request.POST.get('current_weight')
+        height = request.POST.get('height')
+        age = request.POST.get('age')
+
+        # Execute the query to update the health statistics in the database
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute("""
+            UPDATE Member_Health
+            SET start_weight = %s, current_weight = %s, height = %s, age = %s
+            WHERE member_id = %s
+        """, [start_weight, current_weight, height, age, user_id])
+        connection.commit()
+
+        # Redirect to the home page after updating the health statistics
+        return redirect('MembersApp-homepage', user_id=user_id)
+
+def update_exercise_routine(request, user_id):
+    if request.method == 'POST':
+        start_weight = request.POST.get('start_weight')
+        current_weight = request.POST.get('current_weight')
+        height = request.POST.get('height')
+        age = request.POST.get('age')
+
+        # Execute the query to update the health statistics in the database
+        connection = connect()
+        cursor = connection.cursor()
+        cursor.execute("""
+            UPDATE Member_Health
+            SET start_weight = %s, current_weight = %s, height = %s, age = %s
+            WHERE member_id = %s
+        """, [start_weight, current_weight, height, age, user_id])
+        connection.commit()
+
+        # Redirect to the home page after updating the health statistics
+        return redirect('MembersApp-homepage', user_id=user_id)
+
+    
 
 def profile(request, user_id):
     # Execute the query with the form data

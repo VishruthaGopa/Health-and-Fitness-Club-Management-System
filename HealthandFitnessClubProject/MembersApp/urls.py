@@ -3,7 +3,11 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    #path('', views.home, name='HealthandFitnessApp-login'),    
+    #path('', views.home, name='HealthandFitnessApp-login'),  
+    path('homePage/<int:user_id>', views.homePage, name='MembersApp-homepage'),
+    path('update_health_statistics/<int:user_id>', views.update_Health_Statistics, name='update_health_statistics'),
+    path('update_exercise_routine/<int:routine_id>', views.update_exercise_routine, name='update_exercise_routine'),
+    path('groupFitnessClasses/<int:user_id>', views.groupFitnessClasses, name='groupFitnessClasses'),  
     path('profile/<int:user_id>', views.profile, name='profile'),
     path('updateProfile/<int:user_id>', views.update_profile, name='updateProfile'),
     path('groupFitnessClasses/<int:user_id>', views.groupFitnessClasses, name='groupFitnessClasses'),

@@ -1,0 +1,115 @@
+{% extends "HealthandFitnessClubApp/base.html" %}
+
+{% block content %}
+    <style>
+        .exercise-section {
+            background-color: #ffcccc; /* Light red background color */
+            padding: 20px;
+            border: 5px double #a50606;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative; /* Add position relative for absolute positioning */
+        }
+
+        .health-stats-section {
+            background-color: #ccccff; /* Light blue background color */
+            padding: 20px;
+            border: 5px double #2d0d6c;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative; /* Add position relative for absolute positioning */
+        }
+
+        .fitness-goals-section {
+            background-color: #83b9f3; /* Light blue background color */
+            padding: 20px;
+            border: 5px double #04507c;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative; /* Add position relative for absolute positioning */
+        }
+
+        .edit-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #569de4;
+            color: white;
+            border: none;
+            
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="container">
+        <h1 class="text-center mb-5">Health and Fitness Dashboard</h1>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card exercise-section">
+                    <button class="edit-button">Edit</button> <!-- Edit button -->
+                    <div class="card-body">
+                        <h2 class="card-title">Exercise Routines</h2>
+                        <ul class="list-group">
+                            {% for routine in user_exercise_routines %}
+                            <li class="list-group-item">{{ routine.routine_name }} - {{ routine.description }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card health-stats-section">
+                    <button class="edit-button">Edit</button> <!-- Edit button -->
+                    <div class="card-body">
+                        <h2 class="card-title">Health Statistics</h2>
+                        <form method="POST" action="{% url 'update_health_statistics' user_id %}">
+                            <!-- Add form fields for editing health statistics here -->
+                            <ul>
+                                <div class="start-weight">
+                                    <label for="start_weight">Start Weight:</label>
+                                    <input type="text" id="start_weight" name="start_weight" value="{{ user_data.0 }}">
+                                </div>
+                                <div class="current-weight">
+                                    <label for="current_weight">Current Weight: </label>
+                                    <input type="text" id="current_weight" name="current_weight" value="{{ user_data.1 }}">
+                                </div>
+                                <div class="height">
+                                    <label for="height">Height:</label>
+                                    <input type="text" id="height" name="height" value="{{ user_data.2 }}">
+                                </div>
+                                <div class="age">
+                                    <label for="age">Age:</label>
+                                    <input type="text" id="age" name="age" value="{{ user_data.3}}">
+                                </div>
+                            </ul>
+                        
+                            {% csrf_token %}
+                            <input type="submit" value="Save">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card fitness-goals-section">
+                    <button class="edit-button">Edit</button> <!-- Edit button -->
+                    <div class="card-body">
+                        <h2 class="card-title">Fitness Goals</h2>
+                        <ul class="goal-list">
+                            <li class="goal-item"><input type="checkbox" class="goal-checkbox" id="goal1"><label for="goal1">Run a marathon</label></li>
+                            <li class="goal-item"><input type="checkbox" class="goal-checkbox" id="goal2"><label for="goal2">Increase bench press weight by 20%</label></li>
+                            <li class="goal-item"><input type="checkbox" class="goal-checkbox" id="goal3"><label for="goal3">Improve flexibility with daily stretching</label></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
