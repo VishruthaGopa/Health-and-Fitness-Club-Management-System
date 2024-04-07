@@ -7,11 +7,13 @@ from HealthandFitnessClubProject.databaseConnection import connect
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-
+"""
+Render the homePage template
+"""
 def homePage(request, user_id):
     user_health_data = HealthStatistics(request, user_id)
-    user_exercise_routines = ExerciseRoutines(request, user_id)
-    user_fitness_goal = FitnessGoals(request, user_id)
+    user_exercise_routines = getExerciseRoutines(request, user_id)
+    user_fitness_goal = getFitnessGoals(request, user_id)
     return render(request, 'MembersApp/homePage.html', {
         'user_id': user_id,
         'user_data': user_health_data,
@@ -19,7 +21,10 @@ def homePage(request, user_id):
         'user_fitness_goal': user_fitness_goal
     })
 
-def FitnessGoals(request, user_id):
+"""
+Fetch the fitness goals of the member specified by the user_id
+"""
+def getFitnessGoals(request, user_id):
      # Execute the query with the form data
     connection = connect()
     cursor = connection.cursor()
@@ -43,8 +48,10 @@ def FitnessGoals(request, user_id):
         }
     return goals_dict
 
-
-def ExerciseRoutines(request, user_id):
+"""
+Fetch the exercise routines for the member specified by the user_id
+"""
+def getExerciseRoutines(request, user_id):
     # Execute the query with the form data
     connection = connect()
     cursor = connection.cursor()
@@ -70,13 +77,13 @@ def ExerciseRoutines(request, user_id):
     
     return user_exercise_routines_dicts
 
+"""
+Fetch health statistics for the member specified by the user_id
+"""
 def HealthStatistics(request, user_id):
     # Execute the query with the form data
     connection = connect()
     cursor = connection.cursor()
-
-    # if request.method == 'POST':
-    #     update_HealthStatistics(request, user_id) 
 
     cursor.execute("""
             SELECT start_weight, current_weight, height, age
@@ -88,6 +95,9 @@ def HealthStatistics(request, user_id):
     # Pass the query result to the template context
     return user_health_data
 
+"""
+Update the health statistics for the member with user_id
+"""
 def update_Health_Statistics(request, user_id):
     if request.method == 'POST':
         start_weight = request.POST.get('start_weight')
@@ -108,14 +118,19 @@ def update_Health_Statistics(request, user_id):
         # Redirect to the home page after updating the health statistics
         return redirect('MembersApp-homepage', user_id=user_id)
 
+"""
+Render the exercise_routines template
+"""
 def update_exercise_routine(request, user_id):
     if request.method == 'POST':
-        routines = ExerciseRoutines(request, user_id)
+        routines = getExerciseRoutines(request, user_id)
         return render(request, 'MembersApp/exercise_routines.html', {
         'user_id': user_id,
         'existing_routines': routines})
         
-    
+"""
+Make changes to an existing exercise routine
+"""    
 def edit_exercise_routine(request, user_id):
     if request.method == 'POST':
         routine_name = request.POST.get('routine_name')
@@ -137,6 +152,9 @@ def edit_exercise_routine(request, user_id):
         # Redirect to the home page after updating the exercise routine
         return redirect('MembersApp-homepage', user_id=user_id)
     
+"""
+Create a new exercise routine for the member
+"""
 def create_exercise_routine(request, user_id):
     if request.method == 'POST':
         routine_name = request.POST.get('new_routine_name')
@@ -156,11 +174,14 @@ def create_exercise_routine(request, user_id):
         # Redirect to the home page after creating the exercise routine
         return redirect('MembersApp-homepage', user_id=user_id)
 
+"""
+Delete an exercise routine
+"""
 def delete_exercise_routine(request, user_id):
     if request.method == 'POST':
         routine_id = request.POST.get('routine_id')
 
-        # Execute the query to insert the new exercise routine into the database
+        # Execute the query to delete the exercise routine from the database
         connection = connect()  # Assuming this function establishes a database connection
         cursor = connection.cursor()
         cursor.execute("""
@@ -170,11 +191,18 @@ def delete_exercise_routine(request, user_id):
         # Redirect to the home page after creating the exercise routine
         return redirect('MembersApp-homepage', user_id=user_id)
 
+
+"""
+Render the fitness_goals template
+"""
 def add_fitness_goal(request, user_id):
     if request.method == 'POST':
         return render(request, 'MembersApp/fitness_goals.html', {
         'user_id': user_id})
 
+"""
+Create a new fitness goal for the member
+"""
 def create_fitness_goal(request, user_id):
        if request.method == 'POST':
         weight_goal = request.POST.get('weight_goal')
@@ -195,7 +223,10 @@ def create_fitness_goal(request, user_id):
 
         # Redirect to the home page after creating the exercise routine
         return redirect('MembersApp-homepage', user_id=user_id) 
-       
+
+"""
+Delete the fitness_goal once it has been accomplished
+"""    
 def delete_fitness_goal(request, user_id):
     if request.method == 'POST':
 
@@ -208,7 +239,10 @@ def delete_fitness_goal(request, user_id):
 
         # Redirect to the home page after creating the exercise routine
         return redirect('MembersApp-homepage', user_id=user_id)  
-    
+
+"""
+Render the profile template with the latest data
+"""   
 def profile(request, user_id):
     # Execute the query with the form data
     connection = connect()
@@ -216,7 +250,7 @@ def profile(request, user_id):
 
 
     if request.method == 'POST':
-        update_profile(request, user_id)        
+        update_profile(request, user_id)  #update the profile information       
     
    
      # Retrieve users's profile information from the database
@@ -228,6 +262,9 @@ def profile(request, user_id):
         'user_data': user_data
     })
 
+"""
+Fetch profile information using the user_id
+"""
 def get_user_info(request, user_id):
     connection = connect()
     cursor = connection.cursor()
@@ -256,7 +293,9 @@ def get_user_info(request, user_id):
 
         return user_info
     
-
+"""
+Update the profile information for the member
+"""
 def update_profile(request, user_id):
     connection = connect()
     cursor = connection.cursor()
@@ -283,7 +322,11 @@ def update_profile(request, user_id):
 
     # Redirect to the profile page with the updated data and success message
     return redirect('profile', user_id=user_id)
-    
+
+"""
+Fetch the latests group fitness classes data from the db and render the
+groupFitnessClasses template
+"""    
 def groupFitnessClasses(request, user_id):
     connection = connect()
     cursor = connection.cursor()
@@ -308,9 +351,10 @@ def groupFitnessClasses(request, user_id):
         'enrolled_classes': enrolled_classes,
         'all_classes': all_classes
     })
-    #return render(request, 'MembersApp/groupFitnessClasses.html', {'user_id': user_id,})
-
-
+    
+"""
+Book the selected class 
+"""
 def bookClasses(request, user_id):
     connection = connect()
     cursor = connection.cursor()
@@ -346,6 +390,9 @@ def bookClasses(request, user_id):
             messages.success(request, "No classes have been selected.")
     return redirect('groupFitnessClasses', user_id=user_id)
 
+"""
+Remove the class booking for the current member
+"""
 def removeClass(request):
     connection = connect()
     cursor = connection.cursor()
@@ -363,8 +410,12 @@ def removeClass(request):
      
     return redirect('groupFitnessClasses', user_id=user_id)
 
+"""
+Recommend trainers to member based on the form_of_exercise specified in the fitness goal
+and the trainer's specializations
+"""
 def getRecommendations(request, user_id):
-    fitness_goal = FitnessGoals(request, user_id)
+    fitness_goal = getFitnessGoals(request, user_id)
     if fitness_goal:
         exercises = fitness_goal['form_of_exercise']
         connection = connect()
@@ -380,7 +431,11 @@ def getRecommendations(request, user_id):
         connection.close()
 
     return recommended_trainers
-   
+
+"""
+Fetch the latest information for the personal training sessions from the db
+and Render the personalTrainingSessions template
+""" 
 def personalTrainingSessions(request, user_id):
     connection = connect()
     cursor = connection.cursor()
@@ -437,6 +492,9 @@ def personalTrainingSessions(request, user_id):
         'recommended_trainers': recommended_trainers
     })
 
+"""
+Book the personal training session for the member after confirming the payment
+"""
 def bookPersonalTrainingSession(request, user_id):
     connection = connect()
     cursor = connection.cursor()
@@ -466,6 +524,9 @@ def bookPersonalTrainingSession(request, user_id):
         connection.close()
     return redirect('personalTrainingSessions', user_id=user_id)
 
+"""
+render the payment_info template
+"""
 def verifyPayment(request, user_id, session_id):
     context = {
         'user_id': user_id,
@@ -473,17 +534,20 @@ def verifyPayment(request, user_id, session_id):
     }
     return render(request, 'MembersApp/payment_info.html', context)
 
+"""
+get the payment information from the form and refresh the PersonalTrainings page
+"""
 def getPaymentInfo(request, user_id):
     if request.method == 'POST':
-        # Process the payment information here
         # Once the payment is confirmed, call bookPersonalTrainingSession
         
         return bookPersonalTrainingSession(request, user_id)
     else:
         return HttpResponse("Invalid request method")
-
-        
-
+      
+"""
+Remove the personal training session from the member's booking
+"""
 def removeSession(request):
     connection = connect()
     cursor = connection.cursor()
