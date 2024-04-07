@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends "HealthandFitnessClubApp/base.html" %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Training Sessions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            max-width: 900px;
+            margin: 20px auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        h2 {
+            margin-top: 30px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .booked-sessions,
+        .available-sessions {
+            width: calc(40% - 5px);
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 5px double #ccc;
+        }
+
+        @media (max-width: 768px) {
+            .booked-classes,
+            .available-classes {
+                width: 100%;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Personal Training Sessions</h1>
+        <div class="booked-sessions">
+            <h2>Your Booked Sessions</h2>
+            <ul>
+                {% for session_id, trainer_name, session_date, session_time, room_id in booked_sessions %}
+                <li class="session">
+                    <div class="session-info">
+                        <span>Session ID: {{ session_id }}</span><br>
+                        <span>Trainer: {{ trainer_name }}</span><br>
+                        <span>Session Date: {{ session_date }}<br> Session Time: {{ session_time }}</span><br>
+                        <span>Room: {{ room_id }}</span><br>
+                    </div>
+                    <form method="post" action="{% url 'remove_personal_training_session' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="user_id" value="{{ user_id }}">
+                        <input type="hidden" name="session_id" value="{{ session_id }}">
+                        <button type="submit">Remove Session</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+            {% if not booked_sessions %}
+            <p>You have not booked any sessions.</p>
+            {% endif %}
+        </div>
+        <div class="available-sessions">
+            <h2>All Available Sessions</h2>
+            <ul>
+                {% for session_id, trainer_name, session_date, session_time, room_id, price, duration in all_sessions %}
+                <li>
+                    <div class="session-info">
+                        <span>Session ID: {{ session_id }}</span><br>
+                        <span>Trainer: {{ trainer_name }}</span><br>
+                        <span>Session Date: {{ session_date }}</span><br>
+                        <span>Session Time: {{ session_time }}</span><br>
+                        <span>Duration: {{ duration }}</span><br>
+                        <span>Room ID: {{ room_id }}</span><br>
+                        <span>Price: ${{ price }}</span>
+                    </div>
+                    <form method="post" action="{% url 'book_personal_training_session' user_id=user_id%}">
+                        {% csrf_token %}
+                        <input type="hidden" name="user_id" value="{{ user_id }}">
+                        <input type="hidden" name="session_id" value="{{ session_id }}">
+                        <input type="hidden" name="paid" value="False">
+                        <button type="submit">Book Session</button>
+                    </form>
+                    
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+{% endblock content %}

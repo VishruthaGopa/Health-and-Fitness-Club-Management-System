@@ -1,0 +1,93 @@
+{% extends "HealthandFitnessClubApp/base.html" %}
+{% block content %}
+<div>
+    <h1>Edit Existing Exercise Routines</h1>
+    <ul class="routine-list">
+        {% for routine in existing_routines %}
+            <li class="routine-item">
+                <form method="POST" action="{% url 'edit_exercise_routine' user_id=user_id %}">
+                    {% csrf_token %}
+                    <label for="routine_name" style="font-weight: bold;">Routine Name:</label>
+                    <input type="text" id="routine_name" name="routine_name" value="{{ routine.routine_name }}"><br>
+
+                    <label for="description" style="font-weight: bold;">Description:</label><br>
+                    <textarea id="description" name="description" rows="4" cols="50">{{ routine.description }}</textarea><br>
+
+                    <label for="duration" style="font-weight: bold;">Duration (minutes):</label>
+                    <input type="number" id="duration" name="duration" value="{{ routine.duration }}"><br>
+                    
+
+                    <label for="date_created" style="font-weight: bold;">Date Created:</label>
+                    <input type="date" id="date_created" name="date_created" value="{{ routine.date_created|date:'Y-m-d' }}"
+                    ><br>
+
+                    <input type="hidden" name="routine_id" value="{{ routine.routine_id }}">
+                    <input type="hidden" name="user_id" value="{{ user_id }}">
+
+                    <button type="submit">Save</button>
+                </form>
+                <form method="POST" action="{% url 'delete_exercise_routine' user_id=user_id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="routine_id" value="{{ routine.routine_id }}">
+                    <input type="hidden" name="user_id" value="{{ user_id }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+            <hr class="routine-divider">
+        {% endfor %}
+    </ul>
+</div>
+    <div class="new-routine-container">
+        <h1>Create New Exercise Routine</h1>
+        <form method="POST" action="{% url 'create_exercise_routine' user_id=user_id %}">
+            {% csrf_token %}
+            <label for="new_routine_name" style="font-weight: bold;">Routine Name:</label>
+            <input type="text" id="new_routine_name" name="new_routine_name" style="margin-bottom: 2px;"><br>
+    
+            <label for="new_description" style="font-weight: bold;">Description:</label>
+            <textarea id="new_description" name="new_description" rows="4" cols="50" style="margin-bottom: 2px;"></textarea><br>
+    
+            <label for="new_duration" style="font-weight: bold;">Duration (minutes):</label>
+            <input type="number" id="new_duration" name="new_duration" style="margin-bottom: 2px;"><br>
+    
+            <input type="hidden" name="user_id" value="{{ user_id }}">
+    
+            <button type="submit">Save</button>
+        </form>
+    </div>
+      
+
+<style>
+    .routine-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .routine-item {
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 2px solid #f1afc8; /* Add border here */
+        background-color: rgb(250, 216, 221);
+    }
+
+    .routine-divider {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border: none;
+        border-bottom: 2px dotted #820204; /* Add border-bottom here */
+    }
+    
+    .new-routine-container {
+    border: 3px dotted #ecaa1b;
+    background-color: rgb(238, 234, 194);
+    padding: 20px;
+    margin-bottom: 20px;
+    }
+    form {
+    display: inline-block; /* Display forms inline */
+    margin-right: -330px; /* Add space between forms */
+}
+    
+
+</style>
+{% endblock %}
