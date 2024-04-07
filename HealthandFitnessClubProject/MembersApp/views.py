@@ -363,10 +363,28 @@ def removeClass(request):
      
     return redirect('groupFitnessClasses', user_id=user_id)
 
+def getRecommendations(request, user_id):
+    fitness_goal = FitnessGoals(request, user_id)
+    if fitness_goal:
+        exercises = fitness_goal['form_of_exercise']
+        connection = connect()
+        cursor = connection.cursor()
+
+        # Retrieve trainers with matching specializations
+        cursor.execute("""
+            SELECT first_name, last_name, specializations
+            FROM trainer
+            WHERE ARRAY[%s]::text[] <@ specializations
+        """, [exercises])
+        recommended_trainers = cursor.fetchall()
+        connection.close()
+
+    return recommended_trainers
+   
 def personalTrainingSessions(request, user_id):
     connection = connect()
     cursor = connection.cursor()
-
+    recommended_trainers = getRecommendations(request, user_id)
     # Retrieve classes that the member has enrolled in
     cursor.execute("""
         SELECT session_id, trainer_id, session_date, session_time, room_id
@@ -415,7 +433,8 @@ def personalTrainingSessions(request, user_id):
     return render(request, 'MembersApp/personalTrainingSessions.html', {
         'user_id': user_id,
         'booked_sessions': updated_enrolled_sessions,
-        'all_sessions': updated_all_sessions
+        'all_sessions': updated_all_sessions,
+        'recommended_trainers': recommended_trainers
     })
 
 def bookPersonalTrainingSession(request, user_id):
