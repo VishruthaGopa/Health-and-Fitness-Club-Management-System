@@ -1,3 +1,4 @@
+from datetime import date
 from xmlrpc.client import Boolean
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -10,11 +11,38 @@ from django.contrib import messages
 def homePage(request, user_id):
     user_health_data = HealthStatistics(request, user_id)
     user_exercise_routines = ExerciseRoutines(request, user_id)
+    user_fitness_goals = FitnessGoals(request, user_id)
     return render(request, 'MembersApp/homePage.html', {
         'user_id': user_id,
         'user_data': user_health_data,
-        'user_exercise_routines': user_exercise_routines
+        'user_exercise_routines': user_exercise_routines,
+        'user_fitness_goals': user_fitness_goals
     })
+
+def FitnessGoals(request, user_id):
+     # Execute the query with the form data
+    connection = connect()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+            SELECT weight_goal, time_goal, diet_goal, form_of_exercise
+            FROM Fitness_Goals
+            WHERE member_id = %s
+        """, [user_id])
+    user_fitness_goals = cursor.fetchall()
+    print(user_fitness_goals)
+    # Convert the list of tuples to a list of dictionaries
+    user_fitness_goals_dicts = []
+    for goals in user_fitness_goals:
+        goals_dict = {
+            'weight_goal': goals[0],
+            'time_goal': goals[1],
+            'diet_goal': goals[2],
+            'form_of_exercise' : goals[3]
+        }
+        user_fitness_goals_dicts.append(goals_dict)
+    return user_fitness_goals_dicts
+
 
 def ExerciseRoutines(request, user_id):
     # Execute the query with the form data
@@ -34,10 +62,10 @@ def ExerciseRoutines(request, user_id):
             'routine_id': routine[0],
             'routine_name': routine[1],
             'description': routine[2],
-            'duration': routine[3],
+             'duration' : routine[3].total_seconds(),
             'date_created': routine[4]
         }
-    user_exercise_routines_dicts.append(routine_dict)
+        user_exercise_routines_dicts.append(routine_dict)
 
     
     return user_exercise_routines_dicts
@@ -82,26 +110,106 @@ def update_Health_Statistics(request, user_id):
 
 def update_exercise_routine(request, user_id):
     if request.method == 'POST':
-        start_weight = request.POST.get('start_weight')
-        current_weight = request.POST.get('current_weight')
-        height = request.POST.get('height')
-        age = request.POST.get('age')
-
-        # Execute the query to update the health statistics in the database
+        routines = ExerciseRoutines(request, user_id)
+        return render(request, 'MembersApp/exercise_routines.html', {
+        'user_id': user_id,
+        'existing_routines': routines})
+        
+    
+def edit_exercise_routine(request, user_id):
+    if request.method == 'POST':
+        routine_name = request.POST.get('routine_name')
+        description = request.POST.get('description')
+        duration = request.POST.get('duration')
+        date_created = request.POST.get('date_created')
+        routine_id = request.POST.get('routine_id')
+        print(routine_name, description, duration, date_created, routine_id)
+        # Execute the query to update the exercise routine in the database
         connection = connect()
         cursor = connection.cursor()
         cursor.execute("""
-            UPDATE Member_Health
-            SET start_weight = %s, current_weight = %s, height = %s, age = %s
-            WHERE member_id = %s
-        """, [start_weight, current_weight, height, age, user_id])
+            UPDATE exercise_routine
+            SET routine_name = %s, description = %s, duration = %s, date_created = %s
+            WHERE routine_id = %s
+        """, [routine_name, description, duration, date_created, routine_id])
         connection.commit()
 
-        # Redirect to the home page after updating the health statistics
+        # Redirect to the home page after updating the exercise routine
+        return redirect('MembersApp-homepage', user_id=user_id)
+    
+def create_exercise_routine(request, user_id):
+    if request.method == 'POST':
+        routine_name = request.POST.get('new_routine_name')
+        description = request.POST.get('new_description')
+        duration = request.POST.get('new_duration')
+        date_created = date.today()
+
+        # Execute the query to insert the new exercise routine into the database
+        connection = connect()  # Assuming this function establishes a database connection
+        cursor = connection.cursor()
+        cursor.execute("""
+            INSERT INTO Exercise_Routine (member_id, routine_name, description, duration, date_created)
+            VALUES (%s, %s, %s, %s, %s)
+        """, [user_id, routine_name, description, duration, date_created])
+        connection.commit()
+
+        # Redirect to the home page after creating the exercise routine
         return redirect('MembersApp-homepage', user_id=user_id)
 
-    
+def delete_exercise_routine(request, user_id):
+    if request.method == 'POST':
+        routine_id = request.POST.get('routine_id')
 
+        # Execute the query to insert the new exercise routine into the database
+        connection = connect()  # Assuming this function establishes a database connection
+        cursor = connection.cursor()
+        cursor.execute("""
+            DELETE from Exercise_Routine where routine_id = %s """, [routine_id])
+        connection.commit()
+
+        # Redirect to the home page after creating the exercise routine
+        return redirect('MembersApp-homepage', user_id=user_id)
+
+def add_fitness_goal(request, user_id):
+    if request.method == 'POST':
+        return render(request, 'MembersApp/fitness_goals.html', {
+        'user_id': user_id})
+
+def create_fitness_goal(request, user_id):
+       if request.method == 'POST':
+        weight_goal = request.POST.get('weight_goal')
+        time_goal = request.POST.get('time_goal')
+        diet_goal = request.POST.get('diet_goal')
+        form_of_exercise = request.POST.get('form_of_exercise')
+        form_of_exercise_array = form_of_exercise.split(',')
+
+
+        # Execute the query to insert the new exercise routine into the database
+        connection = connect()  # Assuming this function establishes a database connection
+        cursor = connection.cursor()
+        cursor.execute("""
+            INSERT INTO fitness_goals (member_id, weight_goal, time_goal, diet_goal, form_of_exercise)
+            VALUES (%s, %s, %s, %s, %s)
+        """, [user_id, weight_goal, time_goal, diet_goal, form_of_exercise_array])
+        connection.commit()
+
+        # Redirect to the home page after creating the exercise routine
+        return redirect('MembersApp-homepage', user_id=user_id) 
+       
+def delete_fitness_goal(request, user_id):
+    if request.method == 'POST':
+        goal_id = request.POST.get('goal_id')
+
+        # Execute the query to insert the new exercise routine into the database
+        connection = connect()  # Assuming this function establishes a database connection
+        cursor = connection.cursor()
+        cursor.execute("""
+            DELETE from fitness_goals where goal_id = %s """, [goal_id])
+        connection.commit()
+
+        # Redirect to the home page after creating the exercise routine
+        return redirect('MembersApp-homepage', user_id=user_id)  
+    
 def profile(request, user_id):
     # Execute the query with the form data
     connection = connect()

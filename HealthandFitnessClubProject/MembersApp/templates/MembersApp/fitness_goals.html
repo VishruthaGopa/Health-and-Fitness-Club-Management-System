@@ -1,0 +1,42 @@
+{% extends "HealthandFitnessClubApp/base.html" %}
+{% block content %}
+</div>
+<div class="new-goal-container">
+    <h1>Create New Exercise Routine</h1>
+    <form method="POST" action="{% url 'create_fitness_goal' user_id=user_id %}">
+        {% csrf_token %}
+        <label for="weight_goal" style="font-weight: bold;">Weight:</label>
+        <input type="text" id="weight_goal" name="weight_goal" style="margin-bottom: 2px;"><br>
+
+        <label for="time_goal" style="font-weight: bold;">Time (weeks):</label>
+        <input type="number" id="time_goal" name="time_goal" style="margin-bottom: 2px;"><br>
+
+        <label for="diet_goal" style="font-weight: bold;">Diet:</label>
+        <input type="text" id="diet_goal" name="diet_goal" style="margin-bottom: 2px;"><br>
+
+        <label for="form_of_exercise" style="font-weight: bold;">Form of Exercise:</label>
+        <input type="text" id="form_of_exercise" name="form_of_exercise" style="margin-bottom: 2px;"><br>
+
+        <input type="hidden" name="user_id" value="{{ user_id }}">
+
+        <button type="submit">Save</button>
+    </form>
+</div>
+
+<style>
+    .new-goal-container {
+    width: 600px; /* Set the width to create a square */
+    height: 350px; /* Set the height to match the width */
+    margin: 0 auto; /* Center the container horizontally */
+    border: 3px double #2881f4;
+    background-color: rgb(141, 197, 247);
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: left; /* Center the content inside the container */
+    display: flex;
+    flex-direction: column;
+    justify-content: top;
+}
+        
+</style>
+{% endblock %}
