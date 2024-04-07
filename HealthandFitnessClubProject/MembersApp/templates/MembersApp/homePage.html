@@ -28,6 +28,7 @@
             border-radius: 5px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             position: relative; /* Add position relative for absolute positioning */
+            width: 100%; /* Make the container wider */
         }
 
         .edit-button {
@@ -66,8 +67,8 @@
                                 {% for routine in user_exercise_routines %}
                                 <li class="list-group-item">
                                     <span class="routine-name" id="routine-name"><strong>{{ routine.routine_name }}</strong></span><br> 
-                                    <span class="description" id="description">{{ routine.description }}</span> 
-                                    <span class="duration" id="duration">{{ routine.duration }}</span> 
+                                    <span class="description" id="description">{{ routine.description }};</span> 
+                                    <span class="duration" id="duration">{{ routine.duration }} minutes;</span> 
                                     <span class="data-created" id="data-created">{{ routine.date_created }}</span>
                                     <input type="hidden" name="routine_id" value="{{ routine.routine_id }}">
                                     <input type="hidden" name="user_id" value="{{ user_id }}">
@@ -108,29 +109,26 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="card fitness-goals-section">
-            <form method="POST" action="{% url 'add_fitness_goal' user_id=user_id %}">
-                {% csrf_token %}    
-                <button type="submit" class="add-goal-button">Add Goal</button> 
-            </form>
-            <div class="card-body">
-                <h2 class="card-title">Fitness Goals</h2>
-                <ul class="goal-list">
-                    {% for goal in user_fitness_goals %}
-                    <li class="goal-item">
-                        <form method="POST" action="{% url 'delete_fitness_goal' user_id=user_id %}">
-                            {% csrf_token %}
-                            <label for="goal{{ forloop.counter }}">Weight: {{ goal.weight_goal }}, Time: {{ goal.time_goal }} weeks, Diet: {{ goal.diet_goal }}, Exercise: {{ goal.form_of_exercise }}</label>
-                            <button type="submit" class="completed">Completed!</button>
-                            <input type="hidden" name="goal_id" value="{{ goal.goal_id }}">
-                        </form>
-                    </li>
-                    {% endfor %}
-                </ul>
+            <div class="card fitness-goals-section">
+                {% if not user_fitness_goal %}
+                <form method="POST" action="{% url 'add_fitness_goal' user_id=user_id %}">
+                    {% csrf_token %}    
+                    <button type="submit" class="add-goal-button">Add Goal</button> 
+                </form>
+                {% endif %}
+                <div class="card-body">
+                    <h2 class="card-title">Fitness Goals</h2>
+                    <ul class="goal-list">
+                        {% if user_fitness_goal %}
+                        <li class="goal-item">
+                            <form method="POST" action="{% url 'delete_fitness_goal' user_id=user_id %}">
+                                {% csrf_token %}
+                                <label>Weight: {{ user_fitness_goal.weight_goal }}, Time: {{ user_fitness_goal.time_goal }} weeks, Diet: {{ user_fitness_goal.diet_goal }}, Exercise: {{ user_fitness_goal.form_of_exercise }}</label>
+                                <button type="submit" class="completed">Completed!</button>
+                            </form>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
             </div>
-            
-        </div>
-        
-        
 {% endblock %}

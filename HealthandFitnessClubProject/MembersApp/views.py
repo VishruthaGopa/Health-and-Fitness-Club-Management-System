@@ -11,12 +11,12 @@ from django.contrib import messages
 def homePage(request, user_id):
     user_health_data = HealthStatistics(request, user_id)
     user_exercise_routines = ExerciseRoutines(request, user_id)
-    user_fitness_goals = FitnessGoals(request, user_id)
+    user_fitness_goal = FitnessGoals(request, user_id)
     return render(request, 'MembersApp/homePage.html', {
         'user_id': user_id,
         'user_data': user_health_data,
         'user_exercise_routines': user_exercise_routines,
-        'user_fitness_goals': user_fitness_goals
+        'user_fitness_goal': user_fitness_goal
     })
 
 def FitnessGoals(request, user_id):
@@ -29,19 +29,19 @@ def FitnessGoals(request, user_id):
             FROM Fitness_Goals
             WHERE member_id = %s
         """, [user_id])
-    user_fitness_goals = cursor.fetchall()
+    user_fitness_goals = cursor.fetchone()
     print(user_fitness_goals)
-    # Convert the list of tuples to a list of dictionaries
-    user_fitness_goals_dicts = []
-    for goals in user_fitness_goals:
+    # Convert the tuples to dict
+    goals_dict = {}
+    if user_fitness_goals:
+        print(user_fitness_goals)
         goals_dict = {
-            'weight_goal': goals[0],
-            'time_goal': goals[1],
-            'diet_goal': goals[2],
-            'form_of_exercise' : goals[3]
+            'weight_goal': user_fitness_goals[0],
+            'time_goal': user_fitness_goals[1],
+            'diet_goal': user_fitness_goals[2],
+            'form_of_exercise' : user_fitness_goals[3]
         }
-        user_fitness_goals_dicts.append(goals_dict)
-    return user_fitness_goals_dicts
+    return goals_dict
 
 
 def ExerciseRoutines(request, user_id):
@@ -62,7 +62,7 @@ def ExerciseRoutines(request, user_id):
             'routine_id': routine[0],
             'routine_name': routine[1],
             'description': routine[2],
-             'duration' : routine[3].total_seconds(),
+            'duration' : routine[3].total_seconds(),
             'date_created': routine[4]
         }
         user_exercise_routines_dicts.append(routine_dict)
@@ -198,13 +198,12 @@ def create_fitness_goal(request, user_id):
        
 def delete_fitness_goal(request, user_id):
     if request.method == 'POST':
-        goal_id = request.POST.get('goal_id')
 
         # Execute the query to insert the new exercise routine into the database
         connection = connect()  # Assuming this function establishes a database connection
         cursor = connection.cursor()
         cursor.execute("""
-            DELETE from fitness_goals where goal_id = %s """, [goal_id])
+            DELETE from fitness_goals where member_id = %s """, [user_id])
         connection.commit()
 
         # Redirect to the home page after creating the exercise routine
