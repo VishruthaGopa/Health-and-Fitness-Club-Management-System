@@ -115,7 +115,7 @@
     <!-- Cancel class if needed -->
     <form method="post" action="{% url 'AdminApp-cancel_personal_training' session_id=session_id user_id=user_id %}">
         {% csrf_token %}
-        <input type="hidden" name="session_room" value="{{ session_room }}">
+        <input type="hidden" name="room_id" value="{{ room_id}}">
         <input type="hidden" name="session_date" value="{{ session_date}}">
         <input type="hidden" name="session_time" value="{{ session_time }}">
         <button type="submit" class="btn btn-danger">Cancel</button>
