@@ -84,6 +84,7 @@
     <form method="post" action="{% url 'AdminApp-updateGroupFitness' class_id=class_id user_id=user_id %}">
         {% csrf_token %}
 
+        <!-- Current group fitness class information that can be updated -->
         <label for="class_id">Session ID:</label>
         <input type="text" id="class_id" name="class_id" value="{{ class_id }}" readonly>
         
@@ -111,6 +112,7 @@
     </form>
     <br>
     <br>
+    <!-- Cancel a class if needed button-->
     <form method="post" action="{% url 'AdminApp-cancel_group_fitness' class_id=class_id user_id=user_id %}">
         {% csrf_token %}
         <input type="hidden" name="session_room" value="{{ room_id}}">

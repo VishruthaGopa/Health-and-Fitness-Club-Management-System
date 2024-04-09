@@ -1,6 +1,7 @@
 {%extends "AdminApp/base.html"%}
 
 {%block content%}
+<!-- Add equipment button -->
 <h1>Equipment Maintenance</h1>
 <form method="get" action="{% url 'AdminApp-addEquipment' user_id=user_id %}">
     {% csrf_token %}
@@ -14,6 +15,7 @@
     </div>
 {% endif %}
 
+<!-- Display equipment -->
 
 <table class="table">
     <tr>
@@ -32,6 +34,7 @@
         <td>{{ equipments.3 }}</td>
         <td>{{ equipments.4 }}</td>
         <td>
+            <!--update equipment-->
             <form method="post" action="{% url 'AdminApp-update_equipment' equipment_id=equipments.0 user_id=user_id %}">
                 {% csrf_token %}
                 <button type="submit">Update</button>

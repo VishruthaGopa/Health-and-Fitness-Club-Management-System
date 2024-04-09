@@ -80,9 +80,10 @@
 <body>
 <!-- Equipment -->
 <div class="profile-container">
-    <h2 style="text-align: center;">Member</h2>
+    <h2 style="text-align: center;">Equipment</h2>
     <form method="post" action="{% url 'AdminApp-addEquipment' user_id=user_id %}">
         {% csrf_token %}
+        <!-- fill in to add new equipment -->
         <label for="equipment_name"><strong>Equipment Name:</strong></label>
         <input type="text" id="equipment_name" name="equipment_name" required><br>
         

@@ -84,6 +84,7 @@
     <form method="post" action="{% url 'AdminApp-updatePersonalTraining' session_id=session_id user_id=user_id %}">
         {% csrf_token %}
 
+        <!-- Current personal trainign session information that can be updated  -->
         <label for="session_id">Session ID:</label>
         <input type="text" id="session_id" name="session_id" value="{{ session_id }}" readonly>
         
@@ -111,6 +112,7 @@
     </form>
     <br>
     <br>
+    <!-- Cancel class if needed -->
     <form method="post" action="{% url 'AdminApp-cancel_personal_training' session_id=session_id user_id=user_id %}">
         {% csrf_token %}
         <input type="hidden" name="session_room" value="{{ session_room }}">
@@ -120,6 +122,7 @@
     </form>
     <br>
     <br>
+    <!-- Give a refund if needed  -->
     <form method="post" action="{% url 'AdminApp-refund' session_id=session_id user_id=user_id %}">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger">Refund</button>

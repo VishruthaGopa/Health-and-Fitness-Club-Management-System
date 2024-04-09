@@ -3,12 +3,14 @@
 
 {%block content%}
 {% if messages %}
+<!-- error message if needed -->
     <div class="messages">
         {% for message in messages %}
             <div{% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: red;">{{ message }}</div>
         {% endfor %}
     </div>
 {% endif %}
+<!-- Display personal training sessions -->
 <h1>Personal Training Sessions</h1>
 <table class="table">
     <tr>
@@ -44,6 +46,7 @@
                 Unpaid
             {% endif %}
         </td>
+        <!-- update personal training sessions button -->
         <td>
             <form method="get" action="{% url 'AdminApp-updatePersonalTraining' session_id=session.0 user_id=user_id %}">
                 {% csrf_token %}
