@@ -1,3 +1,5 @@
+import datetime
+from django.db import DatabaseError
 from django.shortcuts import render, redirect
 import psycopg2
 from HealthandFitnessClubProject.databaseConnection import connect
@@ -112,7 +114,7 @@ def display_personal_fitness_classes(request, user_id):
     cursor.execute("SELECT PTS.session_id, TR.first_name AS trainer_first_name, TR.last_name AS trainer_last_name," +
                    "M.first_name AS member_first_name, M.last_name AS member_last_name,"+
                    "PTS.session_date, PTS.session_time, PTS.duration, RB.room_name, PTS.price,"+
-                   "PTS.payment_status FROM Personal_Training_Sessions PTS JOIN Trainer TR ON PTS.trainer_id = TR.trainer_id "+
+                   "PTS.payment_status, RB.room_id FROM Personal_Training_Sessions PTS JOIN Trainer TR ON PTS.trainer_id = TR.trainer_id "+
                    "LEFT OUTER JOIN Member M ON PTS.member_id = M.member_id JOIN Room_Bookings RB ON PTS.room_id = RB.room_id;")
     personal_sessions = cursor.fetchall()
     connection.close()
@@ -121,10 +123,18 @@ def display_personal_fitness_classes(request, user_id):
 
 def cancel_personal_training(request, user_id, session_id):
     if request.method == 'POST':
+        session_time=request.POST.get('session_time')
+
+        session_date=request.POST.get('session_date')
+        room_id=request.POST.get('room_id')
+
+
         try:
             connection = connect()
             cursor = connection.cursor()
             cursor.execute("DELETE FROM Personal_Training_Sessions WHERE session_id = %s", [session_id])
+            
+            cursor.execute("UPDATE Room_Bookings SET booked = FALSE WHERE room_id = %s AND date = %s AND time = %s", [room_id, session_date, session_time])
             connection.commit()
             connection.close()
             return redirect('AdminApp-display_personal_training', user_id=user_id)
@@ -141,7 +151,7 @@ def display_group_fitness(request, user_id):
     cursor = connection.cursor()
     cursor.execute("SELECT GFC.class_id, T.first_name AS trainer_first_name, T.last_name AS trainer_last_name," +
                    "GFC.class_name, GFC.description, GFC.session_date, GFC.session_time," +
-                   "RB.room_name FROM Group_Fitness_Classes GFC JOIN Trainer T ON GFC.trainer_id = T.trainer_id JOIN Room_Bookings RB ON GFC.room_id = RB.room_id;")
+                   "RB.room_name, RB.room_id FROM Group_Fitness_Classes GFC JOIN Trainer T ON GFC.trainer_id = T.trainer_id JOIN Room_Bookings RB ON GFC.room_id = RB.room_id;")
     group_fitness = cursor.fetchall()
     connection.close()
     return render(request, 'AdminApp/group_fitness_classes.html', {'group_fitness': group_fitness, 'user_id': user_id})
@@ -150,9 +160,22 @@ def display_group_fitness(request, user_id):
 def cancel_group_fitness(request, user_id, class_id):
     if request.method == 'POST':
         try:
+
+            session_time=request.POST.get('session_time')
+
+
+            session_date=request.POST.get('session_date')
+            room_id=request.POST.get('session_room')
+
+
+            print(session_date)
+            print(session_time)
+            print(room_id)
+
             connection = connect()
             cursor = connection.cursor()
             cursor.execute("DELETE FROM Group_Fitness_Classes WHERE class_id = %s", [class_id])
+            cursor.execute("UPDATE Room_Bookings SET booked = FALSE WHERE room_id = %s AND date = %s AND time = %s", [room_id, session_date, session_time])
             connection.commit()
             connection.close()
             return redirect('AdminApp-display_group_fitness', user_id=user_id)
@@ -160,6 +183,140 @@ def cancel_group_fitness(request, user_id, class_id):
             messages.add_message(request, messages.ERROR, f"Cancellation unsuccessful!")
             return redirect('AdminApp-display_group_fitness', user_id=user_id)
     return redirect('AdminApp-display_group_fitness', user_id=user_id)
+
+
+def updateGroupFitness(request, class_id, user_id):
+    if request.method == 'POST':
+        try:
+                    # Extract the old room and the new room from the form data
+            old_room = request.POST.get('room_id')
+            new_room_id = request.POST.get('new_room_id')
+            print(old_room)
+            print(new_room_id)
+
+            # Update the session with the new room and mark it as booked
+            connection = connect()
+            cursor = connection.cursor()
+            cursor.execute("UPDATE Group_Fitness_Classes SET room_id = %s WHERE class_id = %s", [new_room_id, class_id])
+            connection.commit()
+
+
+            # Mark the old room as not booked
+            cursor = connection.cursor()
+            cursor.execute("UPDATE Room_Bookings SET booked = false WHERE room_id = %s", [old_room])
+            connection.commit()
+    
+
+            cursor = connection.cursor()
+            cursor.execute("UPDATE Room_Bookings SET booked = true WHERE room_id = %s", [new_room_id])
+            connection.commit()
+            connection.close()
+
+            # Redirect to a success page or any other appropriate action
+            return redirect('AdminApp-display_group_fitness', user_id=user_id)
+        except Exception as e:
+            messages.add_message(request, messages.ERROR, f"Update unsuccessful!")
+            return redirect('AdminApp-display_group_fitness', user_id=user_id)
+    else:
+        try:
+            # Extract session time and date from the POST request
+            session_time = request.GET.get('session_time')
+            session_hour=session_time.split()
+            session_time=int(session_hour[0])+12
+            session_time = f"{session_time}:00:00"
+
+            session_date = request.GET.get('session_date')
+            room_name=request.GET.get('room_name')
+            room_id=request.GET.get('session_room')
+
+            connection = connect()
+            cursor = connection.cursor()
+
+            # Query the database to find available rooms at the specified session time and date
+            cursor.execute("SELECT room_id, room_name FROM Room_Bookings WHERE booked = false AND time = %s AND date = %s", [ session_time, session_date])
+            available_rooms = cursor.fetchall()
+            print(available_rooms)
+
+            connection.close()
+            return render(request, 'AdminApp/updateGroup.html', {'user_id': user_id, 'available_rooms': available_rooms, 'class_id':class_id, 
+                                                                    'session_date':session_date, 'session_time':session_time, 'room_name':room_name, 'room_id':room_id})
+        except Exception as e:
+            print('Error:', e)
+
+    return redirect('AdminApp-display_group_fitness', user_id=user_id)
+
+        
+
+
+
+
+
+
+
+
+def updatePersonalTraining(request, session_id, user_id):
+    if request.method == 'POST':
+        try:
+                    # Extract the old room and the new room from the form data
+            old_room = request.POST.get('room_id')
+            new_room_id = request.POST.get('new_room_id')
+            print(old_room)
+            print(new_room_id)
+
+            # Update the session with the new room and mark it as booked
+            connection = connect()
+            cursor = connection.cursor()
+            cursor.execute("UPDATE Personal_Training_Sessions SET room_id = %s WHERE session_id = %s", [new_room_id, session_id])
+            connection.commit()
+
+
+            # Mark the old room as not booked
+            cursor = connection.cursor()
+            cursor.execute("UPDATE Room_Bookings SET booked = false WHERE room_id = %s", [old_room])
+            connection.commit()
+    
+
+            cursor = connection.cursor()
+            cursor.execute("UPDATE Room_Bookings SET booked = true WHERE room_id = %s", [new_room_id])
+            connection.commit()
+            connection.close()
+
+            # Redirect to a success page or any other appropriate action
+            return redirect('AdminApp-display_personal_training', user_id=user_id)
+        except Exception as e:
+            messages.add_message(request, messages.ERROR, f"Update unsuccessful!")
+            return redirect('AdminApp-display_personal_training', user_id=user_id)
+    else:
+        try:
+            print(session_id)
+            # Extract session time and date from the POST request
+            session_time = request.GET.get('session_time')
+            session_hour=session_time.split()
+            session_time=int(session_hour[0])+12
+            session_time = f"{session_time}:00:00"
+
+            session_date = request.GET.get('session_date')
+            room_name=request.GET.get('room_name')
+            room_id=request.GET.get('session_room')
+            
+
+            connection = connect()
+            cursor = connection.cursor()
+
+            # Query the database to find available rooms at the specified session time and date
+            cursor.execute("SELECT room_id, room_name FROM Room_Bookings WHERE booked = false AND time = %s AND date = %s", [ session_time, session_date])
+            available_rooms = cursor.fetchall()
+            print(available_rooms)
+
+            connection.close()
+            return render(request, 'AdminApp/updatePersonal.html', {'user_id': user_id, 'available_rooms': available_rooms, 'session_id':session_id, 
+                                                                    'session_date':session_date, 'session_time':session_time, 'room_name':room_name, 'room_id':room_id})
+        except Exception as e:
+            print('Error:', e)
+
+    return redirect('AdminApp-display_personal_training', user_id=user_id)
+
+        
 
 
 

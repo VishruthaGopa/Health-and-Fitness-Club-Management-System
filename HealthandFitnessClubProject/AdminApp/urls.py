@@ -19,5 +19,8 @@ urlpatterns = [
     path('addTrainer/<int:user_id>/', views.addTrainer, name='AdminApp-addTrainer'),
     path('deleteEquipment/<int:equipment_id>/<int:user_id>/', views.deleteEquipment, name='AdminApp-deleteEquipment'),
     path('addEquipment/<int:user_id>/', views.addEquipment, name='AdminApp-addEquipment'),
+    path('update_personal_training/<int:session_id>/<int:user_id>/', views.updatePersonalTraining, name='AdminApp-updatePersonalTraining'),
+     path('update_group_fitness/<int:class_id>/<int:user_id>/', views.updateGroupFitness, name='AdminApp-updateGroupFitness'),
 ]   
+
 

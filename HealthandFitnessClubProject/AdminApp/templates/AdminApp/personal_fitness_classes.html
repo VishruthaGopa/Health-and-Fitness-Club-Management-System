@@ -20,8 +20,7 @@
         <th>Duration</th>
         <th>Room Name</th>
         <th>Payment status</th>
-        <th>Cancel</th>
-        <th>Refund</th>
+        <th>Update</th>
     </tr>
     {% for session in personal_sessions %}
     <tr>
@@ -45,19 +44,17 @@
                 Unpaid
             {% endif %}
         </td>
+        <td>
+            <form method="get" action="{% url 'AdminApp-updatePersonalTraining' session_id=session.0 user_id=user_id %}">
+                {% csrf_token %}
+                <input type="hidden" name="session_room" value="{{ session.11 }}">
+                <input type="hidden" name="room_name" value="{{ session.8 }}">
+                <input type="hidden" name="session_date" value="{{ session.5 }}">
+                <input type="hidden" name="session_time" value="{{ session.6 }}">
+                <button type="submit" class="btn btn-danger">Update</button>
+            </form>
+        </td>
 
-        <td>
-            <form method="post" action="{% url 'AdminApp-cancel_personal_training' session_id=session.0 user_id=user_id %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Cancel</button>
-            </form>
-        </td>
-        <td>
-            <form method="post" action="{% url 'AdminApp-refund' session_id=session.0 user_id=user_id %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Refund</button>
-            </form>
-        </td>
   
     </tr>
     {% endfor %}
