@@ -20,7 +20,7 @@
         <th>Description</th>
         <th>Session Date</th>
         <th>Session Time</th>
-        <th>Action</th>
+        <th>Update</th>
        
     </tr>
     {% for class in group_fitness %}
@@ -34,9 +34,14 @@
         <td>{{ class.6}}</td>
 
         <td>
-            <form method="post" action="{% url 'AdminApp-cancel_group_fitness' class_id=class.0 user_id=user_id %}">
+
+            <form method="get" action="{% url 'AdminApp-updateGroupFitness' class_id=class.0 user_id=user_id %}">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Cancel</button>
+                <input type="hidden" name="session_room" value="{{ class.8 }}">
+                <input type="hidden" name="session_date" value="{{ class.5 }}">
+                <input type="hidden" name="session_time" value="{{ class.6 }}">
+                <input type="hidden" name="room_name" value="{{ class.7 }}">
+                <button type="submit" class="btn btn-danger">Update</button>
             </form>
         </td>
         
