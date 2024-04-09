@@ -342,3 +342,16 @@ def fetch_available_rooms(request, selected_date, selected_time):
     connection.close()
 
     return available_rooms
+
+
+def addSession(request, user_id):
+    # Fetch available dates from Room_Bookings table
+    available_dates = fetch_available_dates()
+
+    return render(request, 'TrainerApp/add_session.html', {'user_id': user_id, 'available_dates': available_dates})
+
+def addClass(request, user_id):
+    # Fetch available dates from Room_Bookings table
+    available_dates = fetch_available_dates()
+
+    return render(request, 'TrainerApp/add_class.html', {'user_id': user_id, 'available_dates': available_dates})
