@@ -94,7 +94,7 @@
 
 
 
-<!-- Trainer Profile -->
+<!-- equipment maintenance -->
 <div class="profile-container">
     <h2 style="text-align: center;">Update Equipment Maintenance</h2>
     <form method="post" action="{% url 'AdminApp-submit_equipment_update' equipment_id=equipment.0 user_id=user_id %}">
@@ -113,6 +113,7 @@
 <br>
 <br>
 
+<!-- Delete equipment if needed -->
 <form method="post" action="{% url 'AdminApp-deleteEquipment' equipment_id=equipment.0 user_id=user_id %}">
     {% csrf_token %}
     <button type="submit">Delete Equipment</button>

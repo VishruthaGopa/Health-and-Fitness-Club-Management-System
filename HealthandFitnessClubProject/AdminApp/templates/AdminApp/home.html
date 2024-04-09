@@ -93,7 +93,7 @@
 
 
 
-<!-- Trainer Profile -->
+<!-- Admin Profile -->
 <div class="profile-container">
     <h2 style="text-align: center;">Admin Profile</h2>
     <form method="post" action="{% url 'AdminApp-update_profile' user_id=user_id %}">       
@@ -106,6 +106,7 @@
         <input type="email" id="email" name="email" value="{{ admin_data.0.3 }}" required><br>
         <label for="phone"><strong>Phone Number:</strong></label>
         <input type="tel" id="phone" name="phone" value="{{ admin_data.0.4 }}"><br>
+        <!-- Print out error messages -->
         {% if messages %}
             <div class="messages">
                 {% for message in messages %}
@@ -113,7 +114,8 @@
                 {% endfor %}
             </div>
         {% endif %}
-                
+
+        <!-- Update profile -->        
         <button type="update">Update</button>
     </form>
 </div>

@@ -80,10 +80,11 @@
 <body>
 
 <div class="profile-container">
-    <h2 style="text-align: center;">Personal</h2>
+    <h2 style="text-align: center;">Personal Training</h2>
     <form method="post" action="{% url 'AdminApp-updatePersonalTraining' session_id=session_id user_id=user_id %}">
         {% csrf_token %}
 
+        <!-- Current personal trainign session information that can be updated  -->
         <label for="session_id">Session ID:</label>
         <input type="text" id="session_id" name="session_id" value="{{ session_id }}" readonly>
         
@@ -111,15 +112,17 @@
     </form>
     <br>
     <br>
+    <!-- Cancel class if needed -->
     <form method="post" action="{% url 'AdminApp-cancel_personal_training' session_id=session_id user_id=user_id %}">
         {% csrf_token %}
-        <input type="hidden" name="session_room" value="{{ session_room }}">
+        <input type="hidden" name="room_id" value="{{ room_id}}">
         <input type="hidden" name="session_date" value="{{ session_date}}">
         <input type="hidden" name="session_time" value="{{ session_time }}">
         <button type="submit" class="btn btn-danger">Cancel</button>
     </form>
     <br>
     <br>
+    <!-- Give a refund if needed  -->
     <form method="post" action="{% url 'AdminApp-refund' session_id=session_id user_id=user_id %}">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger">Refund</button>
