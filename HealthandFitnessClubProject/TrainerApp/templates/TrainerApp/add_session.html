@@ -45,7 +45,7 @@
             margin: 20px auto;
             padding: 0 20px;
         }
-        form {
+        .form-bg {
             background-color: #fff;
             padding: 20px;
             margin-bottom: 20px;
@@ -106,28 +106,51 @@
     </div>
 
     <!--ADDING SESSIONS AND CLASSES -->
-    <div class="container" id="sessions_classes_container">        
+    <div class="container">
+    <div class="form-bg">
+
         <!-- Form for adding Personal Training Sessions -->
-        <form action="" method="GET" id="session_form">
+        <form action="{% url 'TrainerApp-addSession' user_id=user_id %}" method="GET">
             {% csrf_token %}
             <h2>Add Personal Training Session</h2>
-            <label for="session_date">Date:</label>
-                
-            <select id="session_date" name="session_date" required>
-                <option value="" disabled selected>Select Date</option>
-                <!-- Populate with available dates -->
+            
+            <label for="date">Date:</label>
+            <select id="date" name="date" required>
+                <option value="" disabled {% if selected_date %} {% else %} selected {% endif %}>Select Date</option>
+                <!-- Populate with selected date or available dates -->
+                {% if selected_date %}
+                    <option value="{{ date }}" selected>{{ selected_date }}</option>
+                {% endif %}
                 {% for date in available_dates %}
-                    <option value="{{ date }}">{{ date }}</option>
+                    {% if date != selected_date %}
+                        <option value="{{ date }}">{{ date }}</option>
+                    {% endif %}
                 {% endfor %}
             </select><br>
-    
-            <!-- Form for selecting session time -->
-            <label for="session_time">Select Time:</label>
-            <select id="session_time" name="session_time" required>
-                <option value="" disabled selected>Select Date First</option>
-                <!-- Times will be populated dynamically based on selected date-->
+                                    
+            <form action="{% url 'TrainerApp-addSession' user_id=user_id %}" method="GET">
+                <button type="submit" id="nextDate_button"> >> </button> 
+            </form><br>
+
+            
+            <!-- Form for selecting time -->
+            <label for="time">Time:</label>
+            <select id="time" name="time" required >
+                <option value="" disabled {% if selected_time %} {% else %} selected {% endif %}>Select Time</option>
+                <!-- Display selected time or available times if available -->
+                {% if selected_time %}
+                    <option value="{{ selected_time }}" selected>{{ selected_time }}</option>
+                {% endif %}
+                {% if available_times %}
+                    {% for time in available_times %}
+                        <option value="{{ time }}">{{ time }}</option>
+                    {% endfor %}
+                {% endif %}
             </select><br>
-    
+            <form action="{% url 'TrainerApp-addSession' user_id=user_id %}" method="GET">
+                <button type="submit" id="nextTime_button"> >> </button> 
+            </form><br>
+
                 
             <label for="room_id">Room:</label>
             <select id="room_id" name="room_id" required>
@@ -143,7 +166,15 @@
         </form>
                 
     </div>
+    </div>
     
-
 </body>
+
+<script>
+    document.getElementById('nextDate_button').addEventListener('click', function() {
+        // Enable the time select element
+        //document.getElementById('time').disabled = false;
+    });
+</script>
+
 </html>

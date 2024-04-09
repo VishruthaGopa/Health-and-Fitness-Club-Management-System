@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-import psycopg2
 from HealthandFitnessClubProject.databaseConnection import connect
+from datetime import datetime
 
 # Create your views here.
 def members(request, user_id):
@@ -216,38 +216,6 @@ def fetch_classes(user_id):
     return classes
 
 
-# Define a helper function to fetch available dates, times, and rooms based on Room_Bookings table
-def fetch_availability():
-    connection = connect()
-    cursor = connection.cursor()
-
-    # Fetch available dates, times, and rooms
-    cursor.execute("""
-        SELECT DISTINCT session_date FROM Room_Bookings
-        WHERE session_date >= CURRENT_DATE
-        ORDER BY session_date
-    """)
-    dates = cursor.fetchall()
-
-    cursor.execute("""
-        SELECT DISTINCT session_time FROM Room_Bookings
-        WHERE session_date >= CURRENT_DATE
-        ORDER BY session_time
-    """)
-    times = cursor.fetchall()
-
-    cursor.execute("""
-        SELECT DISTINCT room_id, room_name FROM Room_Bookings
-        WHERE session_date >= CURRENT_DATE
-        ORDER BY room_id
-    """)
-    rooms = cursor.fetchall()
-
-    connection.close()
-
-    return dates, times, rooms
-
-# Define the view function
 def sessions_classes(request, user_id):
     # Fetch personal sessions using the helper function
     personal_sessions = fetch_personal_sessions(user_id)
@@ -255,18 +223,7 @@ def sessions_classes(request, user_id):
     # Fetch classes using the helper function
     classes = fetch_classes(user_id)
 
-    selected_date = None  # Initialize selected_date variable
-
-    if request.method == 'GET':
-        selected_date = request.GET.get('session_date')  # Get the selected date from the form
-        print("Request method:", request.method)  # Debug: Print request method
-        print("GET data:", request.GET)  # Debug: Print entire GET data
-        print("Selected Date:", selected_date)  # Debug: Print the selected date
-
-    # Fetch available dates from Room_Bookings table
-    available_dates = fetch_available_dates()
-
-    return render(request, 'TrainerApp/sessions_classes.html', {'user_id': user_id, 'personal_training_sessions': personal_sessions, 'group_classes': classes, 'available_dates': available_dates})
+    return render(request, 'TrainerApp/sessions_classes.html', {'user_id': user_id, 'personal_training_sessions': personal_sessions, 'group_classes': classes})
 
 
 # Define a helper function to fetch available dates from Room_Bookings table
@@ -296,9 +253,7 @@ def fetch_available_dates():
     return available_dates
 
 
-def fetch_available_times(request):
-    selected_date = request.GET['date']
-        
+def fetch_available_times(selected_date):
     # Raw SQL query to fetch available times for the selected date
     sql_query = """
             SELECT DISTINCT time
@@ -319,7 +274,7 @@ def fetch_available_times(request):
     return available_times
 
 
-def fetch_available_rooms(request, selected_date, selected_time):
+def fetch_available_rooms(selected_date, selected_time):
     # Establish connection
     connection = connect()
     cursor = connection.cursor()
@@ -345,10 +300,51 @@ def fetch_available_rooms(request, selected_date, selected_time):
 
 
 def addSession(request, user_id):
+    print("addSession func")
+
     # Fetch available dates from Room_Bookings table
     available_dates = fetch_available_dates()
+    print("Available Dates:", available_dates)
 
-    return render(request, 'TrainerApp/add_session.html', {'user_id': user_id, 'available_dates': available_dates})
+    selected_date = None
+    selected_time = None
+    selected_room = None
+    available_times = None
+    available_rooms = None
+
+    if request.method == 'GET':
+        selected_date_str = request.GET.get('date')  # Get the selected date from the form
+        selected_da_str = request.GET.get('selected_date')  # Get the selected date from the form
+        print("Selected Date:", selected_date_str)
+        print("Select! Date:", selected_da_str)
+        selected_date = selected_date_str
+
+        print(request.GET)  # Print the GET parameters
+        
+        selected_time_str = request.GET.get('time')  # Get the selected time from the form
+        print("Selected Time:", selected_time_str)
+        selected_time = selected_time_str
+
+        if selected_date_str:
+            # Convert the selected date to SQL format (YYYY-MM-DD)
+            selected_date_obj = datetime.strptime(selected_date_str, "%B %d, %Y")
+            sql_formatted_date = selected_date_obj.strftime("%Y-%m-%d")
+
+            print("Selected Date (SQL format):", sql_formatted_date)
+            available_times = fetch_available_times(sql_formatted_date)
+            print("Available Times:", available_times)
+
+            if selected_time_str:
+                print("---")
+
+
+    print("Selected date:", selected_date)
+    print("Selected time:", selected_time)
+    print("Selected room:", selected_room)
+
+    return render(request, 'TrainerApp/add_session.html', {'user_id': user_id, 'available_dates': available_dates, 'available_times': available_times, 'available_rooms': available_rooms, 'selected_date': selected_date, 'selected_time': selected_time})
+
+
 
 def addClass(request, user_id):
     # Fetch available dates from Room_Bookings table
