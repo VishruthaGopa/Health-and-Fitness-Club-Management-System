@@ -108,12 +108,9 @@
     <!--ADDING SESSIONS AND CLASSES -->
     <div class="container">
     <div class="form-bg">
-
-        <!-- Form for adding Personal Training Sessions -->
-        <form action="{% url 'TrainerApp-addSession' user_id=user_id %}" method="GET">
+        <form action="{% url 'TrainerApp-addSession' user_id=user_id %}" method="GET">            
             {% csrf_token %}
             <h2>Add Personal Training Session</h2>
-            
             <label for="date">Date:</label>
             <select id="date" name="date" required>
                 <option value="" disabled {% if selected_date %} {% else %} selected {% endif %}>Select Date</option>
@@ -132,7 +129,7 @@
                 <button type="submit" id="nextDate_button"> >> </button> 
             </form><br>
 
-            
+            <form action="{% url 'TrainerApp-addSession' user_id=user_id %}" method="GET">            
             <!-- Form for selecting time -->
             <label for="time">Time:</label>
             <select id="time" name="time" required >
@@ -146,8 +143,8 @@
                         <option value="{{ time }}">{{ time }}</option>
                     {% endfor %}
                 {% endif %}
-            </select><br>
-            <form action="{% url 'TrainerApp-addSession' user_id=user_id %}" method="GET">
+                </select><br>
+            
                 <button type="submit" id="nextTime_button"> >> </button> 
             </form><br>
 
@@ -171,6 +168,7 @@
 </body>
 
 <script>
+    console.log(available_dates)
     document.getElementById('nextDate_button').addEventListener('click', function() {
         // Enable the time select element
         //document.getElementById('time').disabled = false;

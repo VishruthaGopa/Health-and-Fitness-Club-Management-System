@@ -298,19 +298,24 @@ def fetch_available_rooms(selected_date, selected_time):
 
     return available_rooms
 
+selected_date = None
+selected_time = None
+selected_room = None
+available_times = None
+available_rooms = None
 
 def addSession(request, user_id):
     print("addSession func")
 
+    global selected_date
+    global selected_time
+    global selected_room
+    global available_times
+    global available_rooms
+
     # Fetch available dates from Room_Bookings table
     available_dates = fetch_available_dates()
     print("Available Dates:", available_dates)
-
-    selected_date = None
-    selected_time = None
-    selected_room = None
-    available_times = None
-    available_rooms = None
 
     if request.method == 'GET':
         selected_date_str = request.GET.get('date')  # Get the selected date from the form
@@ -319,7 +324,7 @@ def addSession(request, user_id):
         print("Select! Date:", selected_da_str)
         selected_date = selected_date_str
 
-        print(request.GET)  # Print the GET parameters
+        print("GET", request.GET)  # Print the GET parameters
         
         selected_time_str = request.GET.get('time')  # Get the selected time from the form
         print("Selected Time:", selected_time_str)
@@ -338,12 +343,9 @@ def addSession(request, user_id):
                 print("---")
 
 
-    print("Selected date:", selected_date)
-    print("Selected time:", selected_time)
     print("Selected room:", selected_room)
 
     return render(request, 'TrainerApp/add_session.html', {'user_id': user_id, 'available_dates': available_dates, 'available_times': available_times, 'available_rooms': available_rooms, 'selected_date': selected_date, 'selected_time': selected_time})
-
 
 
 def addClass(request, user_id):

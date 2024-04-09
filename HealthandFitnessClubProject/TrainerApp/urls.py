@@ -10,5 +10,4 @@ urlpatterns = [
 
     path('addSession/<int:user_id>/', views.addSession, name='TrainerApp-addSession'),
     path('addClass/<int:user_id>/', views.addClass, name='TrainerApp-addClass'),
-
 ]
