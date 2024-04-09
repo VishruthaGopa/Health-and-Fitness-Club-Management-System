@@ -103,7 +103,7 @@ def refundPersonalTraining(request, session_id, user_id):
         try:
             connection = connect()
             cursor = connection.cursor()
-            cursor.execute("UPDATE Personal_Training_Sessions SET member_id=%s, payment_status=%s WHERE session_id=%s",                           [None, False, session_id])
+            cursor.execute("UPDATE Personal_Training_Sessions SET member_id=%s, payment_status= false WHERE session_id=%s",[None, session_id])
             connection.commit()
             connection.close()
         except Exception as e:
