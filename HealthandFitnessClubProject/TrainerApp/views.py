@@ -294,7 +294,7 @@ def fetch_available_rooms(selected_date, selected_time):
     available_rooms = [{
         'room_id': row[0],
         'room_name': row[1],
-        'room_description': row[2]
+        'room_location': row[2]
     } for row in cursor.fetchall()]
 
     # Close the database connection
@@ -396,55 +396,62 @@ def thirdSectionForm(request, user_id):
         date = request.POST.get('date')
         time = request.POST.get('time')
 
-        # Remove dots from the time string
-        time = time.replace('.', '')
-
-        # Convert time to SQL format (HH:MM:SS)
-        selected_time_obj = datetime.strptime(time, "%I %p")
-        sql_formatted_time = selected_time_obj.strftime("%H:%M:%S")
-
         # Print out the form data
         print("Class Name:", class_name)
         print("Description:", description)
         print("Date:", date)
-        print("Time:", sql_formatted_time)
+        print("Time:", time)
+        
+        # Remove dots from the time string
+        time = time.replace('.', '')
 
-        #Fetch available times
-        available_rooms = fetch_available_rooms(date, sql_formatted_time)
+        # Convert time to SQL format (HH:MM:SS)
+        time = datetime.strptime(time, "%I %p")
+        time = time.strftime("%H:%M:%S")
+        print("Time:", time)
+
+        #Fetch available rooms
+        available_rooms = fetch_available_rooms(date, time)
         print("Available Rooms:", available_rooms)
 
-        return render(request, 'TrainerApp/thirdSectionForm.html', {'user_id': user_id, 'available_rooms': available_rooms, 'class_name': class_name, 'description': description, 'date': date, 'time': selected_time_obj})
+        return render(request, 'TrainerApp/thirdSectionForm.html', {'user_id': user_id, 'available_rooms': available_rooms, 'class_name': class_name, 'description': description, 'date': date, 'time': time})
+    
     return render(request, 'TrainerApp/thirdSectionForm.html', {'user_id': user_id})
 
+def updateClassDB(request, user_id):
+    if request.method == 'POST':
+        # Access form data
+        class_name = request.POST.get('class_name')
+        description = request.POST.get('description')
+        date = request.POST.get('date')
+        time = request.POST.get('time')
+        room_id = request.POST.get('room')  # Retrieve the selected room ID
 
-def fetch_available_room_bookings():
-    # Establish connection
-    connection = connect()
-    cursor = connection.cursor()
+        # Print out the form data
+        print("Trainer ID:", user_id)
+        print("Class Name:", class_name)
+        print("Description:", description)
+        print("Date:", date)
+        print("Time:", time)
+        print("Room ID:", room_id)  # Print out the selected room ID
 
-    # SQL query to fetch room bookings available on those dates
-    sql_query_room_bookings = """
-        SELECT room_id, room_name, room_location, time, date
-        FROM Room_Bookings
-        WHERE booked = false
-        ORDER BY date;
-    """
-    # Execute the query to fetch room bookings
-    cursor.execute(sql_query_room_bookings)
-    room_bookings = cursor.fetchall()
+        connection = connect()
+        cursor = connection.cursor()
 
-    # Close the database connection
-    connection.close()
+        # SQL query to insert class details into Group_Fitness_Classes table
+        insert_query = """
+        INSERT INTO Group_Fitness_Classes (trainer_id, room_id, class_name, description, session_date, session_time) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s);
 
-    # Initialize dictionary to store room bookings for each date
-    grouped_room_bookings = {}
+        """
+        #cursor.execute(insert_query, (user_id, room_id, class_name, description, date, time))
 
-    # Iterate over room bookings and store them in the dictionary based on date
-    for booking in room_bookings:
-        date = booking['date']
-        if date not in grouped_room_bookings:
-            grouped_room_bookings[date] = []
-        grouped_room_bookings[date].append(booking)
+        # SQL query to update Room_Bookings table to mark the room as booked
+        update_query = """
+        UPDATE Room_Bookings
+        SET booked = true
+        WHERE room_id = %s AND date = %s AND time = %s
+        """
+        #cursor.execute(update_query, (room_id, date, time))
 
-    return grouped_room_bookings
-
+    return HttpResponse("Success")

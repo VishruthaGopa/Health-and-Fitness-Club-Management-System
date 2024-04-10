@@ -13,4 +13,6 @@ urlpatterns = [
 
     path('secondSectionForm/<int:user_id>/', views.secondSectionForm, name='TrainerApp-secondSectionForm'),
     path('thirdSectionForm/<int:user_id>/', views.thirdSectionForm, name='TrainerApp-thirdSectionForm'),
+    path('updateClassDB/<int:user_id>/', views.updateClassDB, name='TrainerApp-updateClassDB'),
+
 ]
