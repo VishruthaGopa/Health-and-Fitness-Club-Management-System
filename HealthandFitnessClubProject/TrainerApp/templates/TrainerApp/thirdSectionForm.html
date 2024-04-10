@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Choose Room for Personal Training Session</title>
+    <title>Choose Room for Fitness Class</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -116,7 +116,7 @@
         <div class="form-bg">
             <form id="roomForm" action="{% url 'TrainerApp-updateClassDB' user_id=user_id %}" method="post">
                 {% csrf_token %}
-                <h2>Choose Room for Personal Training Session</h2>
+                <h2>Choose Room for Fitness Class</h2>
 
                 <!-- Display chosen class name, description, date, and time -->
                 <p><strong>Class Name:</strong> {{ class_name }}</p>

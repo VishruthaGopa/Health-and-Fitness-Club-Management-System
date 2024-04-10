@@ -302,56 +302,12 @@ def fetch_available_rooms(selected_date, selected_time):
 
     return available_rooms
 
-selected_date = None
-selected_time = None
-selected_room = None
-available_times = None
-available_rooms = None
 
-def addSession(request, user_id):
-    print("addSession func")
-
-    global selected_date
-    global selected_time
-    global selected_room
-    global available_times
-    global available_rooms
-
-    # Fetch available dates from Room_Bookings table
-    available_dates = fetch_available_dates()
-    print("Available Dates:", available_dates)
-
-    if request.method == 'GET':
-        selected_date_str = request.GET.get('date')  # Get the selected date from the form
-        selected_da_str = request.GET.get('selected_date')  # Get the selected date from the form
-        print("Selected Date:", selected_date_str)
-        print("Select! Date:", selected_da_str)
-        selected_date = selected_date_str
-
-        print("GET", request.GET)  # Print the GET parameters
-        
-        selected_time_str = request.GET.get('time')  # Get the selected time from the form
-        print("Selected Time:", selected_time_str)
-        selected_time = selected_time_str
-
-        if selected_date_str:
-            # Convert the selected date to SQL format (YYYY-MM-DD)
-            selected_date_obj = datetime.strptime(selected_date_str, "%B %d, %Y")
-            sql_formatted_date = selected_date_obj.strftime("%Y-%m-%d")
-
-            print("Selected Date (SQL format):", sql_formatted_date)
-            available_times = fetch_available_times(sql_formatted_date)
-            print("Available Times:", available_times)
-
-            if selected_time_str:
-                print("---")
-
-
-    print("Selected room:", selected_room)
-
-    return render(request, 'TrainerApp/add_session.html', {'user_id': user_id, 'available_dates': available_dates, 'available_times': available_times, 'available_rooms': available_rooms, 'selected_date': selected_date, 'selected_time': selected_time})
-
-
+#
+#
+# ADDING FITNESS CLASSES
+#
+#
 def addClass(request, user_id):
     # Fetch available dates from Room_Bookings table
     available_dates = fetch_available_dates()
@@ -455,4 +411,110 @@ def updateClassDB(request, user_id):
         cursor.execute(update_query, (room_id, date, time))
         connection.commit()
 
-    return HttpResponse("Success")
+    # Redirect to sessions_classes page after updating
+    return redirect('TrainerApp-sessions_classes', user_id=user_id)
+
+
+
+
+
+#
+#
+# ADDING PERSONAL SESSIONS
+#
+#
+def addSession(request, user_id):
+    # Fetch available dates from Room_Bookings table
+    available_dates = fetch_available_dates()
+    print("Available Dates:", available_dates)
+
+    return render(request, 'TrainerApp/add_session.html', {'user_id': user_id, 'available_dates': available_dates})
+
+def secondSectionForm_Session(request, user_id):
+    if request.method == 'POST':
+        # Access form data
+        price = request.POST.get('price')
+        date = request.POST.get('date')
+
+        # Print out the form data
+        print("Price:", price)
+        print("Date:", date)
+
+        # Convert the selected date to SQL format (YYYY-MM-DD)
+        selected_date_obj = datetime.strptime(date, "%B %d, %Y")
+        sql_formatted_date = selected_date_obj.strftime("%Y-%m-%d")
+        print("Selected Date (SQL format):", sql_formatted_date)
+
+        #Fetch available times
+        available_times = fetch_available_times(sql_formatted_date)
+        print("Available Times:", available_times)
+
+        return render(request, 'TrainerApp/secondSectionForm-Session.html', {'user_id': user_id, 'available_times': available_times, 'price': price, 'date': sql_formatted_date})
+
+    return render(request, 'TrainerApp/secondSectionForm-Session.html', {'user_id': user_id})
+
+def thirdSectionForm_Session(request, user_id):
+    if request.method == 'POST':
+        # Access form data
+        price = request.POST.get('price')
+        date = request.POST.get('date')
+        time = request.POST.get('time')
+
+        # Print out the form data
+        print("Price:", price)
+        print("Date:", date)
+        print("Time:", time)
+        
+        # Remove dots from the time string
+        time = time.replace('.', '')
+
+        # Convert time to SQL format (HH:MM:SS)
+        time = datetime.strptime(time, "%I %p")
+        time = time.strftime("%H:%M:%S")
+        print("Time:", time)
+
+        #Fetch available rooms
+        available_rooms = fetch_available_rooms(date, time)
+        print("Available Rooms:", available_rooms)
+
+        return render(request, 'TrainerApp/thirdSectionForm-Session.html', {'user_id': user_id, 'available_rooms': available_rooms, 'price': price, 'date': date, 'time': time})
+    
+    return render(request, 'TrainerApp/thirdSectionForm-Session.html', {'user_id': user_id})
+
+
+def updateSessionDB(request, user_id):
+    if request.method == 'POST':
+        # Access form data
+        price = request.POST.get('price')
+        date = request.POST.get('date')
+        time = request.POST.get('time')
+        room_id = request.POST.get('room')
+
+        # Print out the form data
+        print("Trainer ID:", user_id)
+        print("Price:", price)
+        print("Date:", date)
+        print("Time:", time)
+        print("Room ID:", room_id)
+
+        connection = connect()
+        cursor = connection.cursor()
+
+        # SQL query to insert personal session details into Personal_Training_Sessions table
+        insert_query = """
+        INSERT INTO Personal_Training_Sessions (trainer_id, session_date, session_time, room_id, price) 
+        VALUES (%s, %s, %s, %s, %s)
+        """
+        cursor.execute(insert_query, (user_id, date, time, room_id, price))
+
+        # SQL query to update Room_Bookings table to mark the room as booked
+        update_query = """
+        UPDATE Room_Bookings
+        SET booked = true
+        WHERE room_id = %s AND date = %s AND time = %s
+        """
+        cursor.execute(update_query, (room_id, date, time))
+        connection.commit()
+
+    # Redirect to sessions_classes page after updating
+    return redirect('TrainerApp-sessions_classes', user_id=user_id)

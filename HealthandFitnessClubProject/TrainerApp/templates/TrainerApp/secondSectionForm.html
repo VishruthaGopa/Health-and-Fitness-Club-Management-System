@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Select Time for Personal Training Session</title>
+    <title>Select Time for Fitness Class</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -116,7 +116,7 @@
         <div class="form-bg">
             <form id="timeForm" action="{% url 'TrainerApp-thirdSectionForm' user_id=user_id %}" method="post">
                 {% csrf_token %}
-                <h2>Select Time for Personal Training Session</h2>
+                <h2>Select Time for Fitness Class</h2>
 
                 <!-- Display chosen class name, description, and date -->
                 <p><strong>Class Name:</strong> {{ class_name }}</p>

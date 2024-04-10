@@ -45,6 +45,13 @@
             margin: 20px auto;
             padding: 0 20px;
         }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
         .form-bg {
             background-color: #fff;
             padding: 20px;
@@ -52,6 +59,7 @@
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
         h2 {
             margin-top: 0;
         }
@@ -94,6 +102,7 @@
 
     <!-- Navigation bar -->
     <div class="navbar">
+    
         <div class="navbar-left">
             <a href="#home">Health and Fitness Club</a>
         </div>
@@ -105,75 +114,31 @@
         </div>
     </div>
 
-    <!--ADDING SESSIONS AND CLASSES -->
     <div class="container">
-    <div class="form-bg">
-        <form action="{% url 'TrainerApp-addSession' user_id=user_id %}" method="GET">            
+    <div class= "form-bg">
+
+        <form id="dateForm" action="{% url 'TrainerApp-secondSectionForm-Session' user_id=user_id %}" method="post">
             {% csrf_token %}
             <h2>Add Personal Training Session</h2>
-            <label for="date">Date:</label>
-            <select id="date" name="date" required>
-                <option value="" disabled {% if selected_date %} {% else %} selected {% endif %}>Select Date</option>
-                <!-- Populate with selected date or available dates -->
-                {% if selected_date %}
-                    <option value="{{ date }}" selected>{{ selected_date }}</option>
-                {% endif %}
+        
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" min="0.00" max="100.00" step= "0.01" value = "40.00" required>
+
+            <label for="date">Select a Date:</label>
+            <select id="date" name="date">
                 {% for date in available_dates %}
-                    {% if date != selected_date %}
-                        <option value="{{ date }}">{{ date }}</option>
-                    {% endif %}
+                <option value="{{ date }}">{{ date }}</option>
                 {% endfor %}
-            </select><br>
-                                    
-            <form action="{% url 'TrainerApp-addSession' user_id=user_id %}" method="GET">
-                <button type="submit" id="nextDate_button"> >> </button> 
-            </form><br>
-
-            <form action="{% url 'TrainerApp-addSession' user_id=user_id %}" method="GET">            
-            <!-- Form for selecting time -->
-            <label for="time">Time:</label>
-            <select id="time" name="time" required >
-                <option value="" disabled {% if selected_time %} {% else %} selected {% endif %}>Select Time</option>
-                <!-- Display selected time or available times if available -->
-                {% if selected_time %}
-                    <option value="{{ selected_time }}" selected>{{ selected_time }}</option>
-                {% endif %}
-                {% if available_times %}
-                    {% for time in available_times %}
-                        <option value="{{ time }}">{{ time }}</option>
-                    {% endfor %}
-                {% endif %}
-                </select><br>
-                <input type="hidden" name="date" value="{{ selected_date }}">
-
-                <button type="submit" id="nextTime_button"> >> </button> 
-            </form><br>
-
-                
-            <label for="room_id">Room:</label>
-            <select id="room_id" name="room_id" required>
-                <option value="1">abc</option> <!--Remove -->
-                <option value="2">def</option> <!--Remove -->
-                <!-- Rooms will be populated dynamically according to availability based on selected date and time -->
-            </select><br>
-    
-            <label for="price">Price ($):</label>
-            <input type="number" id="price" name="price" min="0" step="0.01" required><br>
-    
-            <button type="submit">Add Session</button> 
+            </select>
+        
+            <button type="submit">Next</button>
         </form>
-                
+        
     </div>
     </div>
-    
+
+
+</div>
+
 </body>
-
-<script>
-    console.log(available_dates)
-    document.getElementById('nextDate_button').addEventListener('click', function() {
-        // Enable the time select element
-        //document.getElementById('time').disabled = false;
-    });
-</script>
-
 </html>
