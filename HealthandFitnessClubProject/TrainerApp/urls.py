@@ -10,4 +10,7 @@ urlpatterns = [
 
     path('addSession/<int:user_id>/', views.addSession, name='TrainerApp-addSession'),
     path('addClass/<int:user_id>/', views.addClass, name='TrainerApp-addClass'),
+
+    path('secondSectionForm/<int:user_id>/', views.secondSectionForm, name='TrainerApp-secondSectionForm'),
+    path('thirdSectionForm/<int:user_id>/', views.thirdSectionForm, name='TrainerApp-thirdSectionForm'),
 ]

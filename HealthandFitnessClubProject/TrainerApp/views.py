@@ -281,7 +281,7 @@ def fetch_available_rooms(selected_date, selected_time):
 
     #  SQL query to fetch available rooms for the selected date, time
     sql_query = """
-        SELECT DISTINCT room_id
+        SELECT room_id, room_name, room_location
         FROM Room_Bookings
         WHERE date = %s AND time = %s AND booked = false
         ORDER BY room_id;
@@ -290,8 +290,12 @@ def fetch_available_rooms(selected_date, selected_time):
     # Execute the query
     cursor.execute(sql_query, (selected_date, selected_time))
 
-    # Fetch all distinct room IDs
-    available_rooms = [row[0] for row in cursor.fetchall()]
+    # Fetch all available rooms with their details
+    available_rooms = [{
+        'room_id': row[0],
+        'room_name': row[1],
+        'room_description': row[2]
+    } for row in cursor.fetchall()]
 
     # Close the database connection
     connection.close()
@@ -351,5 +355,96 @@ def addSession(request, user_id):
 def addClass(request, user_id):
     # Fetch available dates from Room_Bookings table
     available_dates = fetch_available_dates()
+    print("Available Dates:", available_dates)
+    
+    room_bookings = None
+    #room_bookings = fetch_available_room_bookings()
+    #print("room booking" , room_bookings)
 
-    return render(request, 'TrainerApp/add_class.html', {'user_id': user_id, 'available_dates': available_dates})
+    return render(request, 'TrainerApp/add_class.html', {'user_id': user_id, 'available_dates': available_dates, 'room_bookings': room_bookings})
+
+def secondSectionForm(request, user_id):
+    if request.method == 'POST':
+        # Access form data
+        class_name = request.POST.get('class_name')
+        description = request.POST.get('description')
+        date = request.POST.get('date')
+
+        # Print out the form data
+        print("Class Name:", class_name)
+        print("Description:", description)
+        print("Date:", date)
+
+        # Convert the selected date to SQL format (YYYY-MM-DD)
+        selected_date_obj = datetime.strptime(date, "%B %d, %Y")
+        sql_formatted_date = selected_date_obj.strftime("%Y-%m-%d")
+        print("Selected Date (SQL format):", sql_formatted_date)
+
+        #Fetch available times
+        available_times = fetch_available_times(sql_formatted_date)
+        print("Available Times:", available_times)
+
+        return render(request, 'TrainerApp/secondSectionForm.html', {'user_id': user_id, 'available_times': available_times, 'class_name': class_name, 'description': description, 'date': sql_formatted_date})
+
+    return render(request, 'TrainerApp/secondSectionForm.html', {'user_id': user_id})
+
+def thirdSectionForm(request, user_id):
+    if request.method == 'POST':
+        # Access form data
+        class_name = request.POST.get('class_name')
+        description = request.POST.get('description')
+        date = request.POST.get('date')
+        time = request.POST.get('time')
+
+        # Remove dots from the time string
+        time = time.replace('.', '')
+
+        # Convert time to SQL format (HH:MM:SS)
+        selected_time_obj = datetime.strptime(time, "%I %p")
+        sql_formatted_time = selected_time_obj.strftime("%H:%M:%S")
+
+        # Print out the form data
+        print("Class Name:", class_name)
+        print("Description:", description)
+        print("Date:", date)
+        print("Time:", sql_formatted_time)
+
+        #Fetch available times
+        available_rooms = fetch_available_rooms(date, sql_formatted_time)
+        print("Available Rooms:", available_rooms)
+
+        return render(request, 'TrainerApp/thirdSectionForm.html', {'user_id': user_id, 'available_rooms': available_rooms, 'class_name': class_name, 'description': description, 'date': date, 'time': selected_time_obj})
+    return render(request, 'TrainerApp/thirdSectionForm.html', {'user_id': user_id})
+
+
+def fetch_available_room_bookings():
+    # Establish connection
+    connection = connect()
+    cursor = connection.cursor()
+
+    # SQL query to fetch room bookings available on those dates
+    sql_query_room_bookings = """
+        SELECT room_id, room_name, room_location, time, date
+        FROM Room_Bookings
+        WHERE booked = false
+        ORDER BY date;
+    """
+    # Execute the query to fetch room bookings
+    cursor.execute(sql_query_room_bookings)
+    room_bookings = cursor.fetchall()
+
+    # Close the database connection
+    connection.close()
+
+    # Initialize dictionary to store room bookings for each date
+    grouped_room_bookings = {}
+
+    # Iterate over room bookings and store them in the dictionary based on date
+    for booking in room_bookings:
+        date = booking['date']
+        if date not in grouped_room_bookings:
+            grouped_room_bookings[date] = []
+        grouped_room_bookings[date].append(booking)
+
+    return grouped_room_bookings
+
