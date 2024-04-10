@@ -441,10 +441,10 @@ def updateClassDB(request, user_id):
         # SQL query to insert class details into Group_Fitness_Classes table
         insert_query = """
         INSERT INTO Group_Fitness_Classes (trainer_id, room_id, class_name, description, session_date, session_time) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s);
+        VALUES (%s, %s, %s, %s, %s, %s);
 
         """
-        #cursor.execute(insert_query, (user_id, room_id, class_name, description, date, time))
+        cursor.execute(insert_query, (user_id, room_id, class_name, description, date, time))
 
         # SQL query to update Room_Bookings table to mark the room as booked
         update_query = """
@@ -452,6 +452,7 @@ def updateClassDB(request, user_id):
         SET booked = true
         WHERE room_id = %s AND date = %s AND time = %s
         """
-        #cursor.execute(update_query, (room_id, date, time))
+        cursor.execute(update_query, (room_id, date, time))
+        connection.commit()
 
     return HttpResponse("Success")
