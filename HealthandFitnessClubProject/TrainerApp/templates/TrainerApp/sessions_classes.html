@@ -160,6 +160,7 @@
                 <th>Price</th>
                 <th>Member Registered</th>
                 <th>Payment Status</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -175,6 +176,13 @@
                 <td>${{ session.7 }}</td>
                 <td>{{ session.1 }}</td>
                 <td>{{ session.8 }}</td>
+                <td>
+                    <form action="{% url 'TrainerApp-cancelSession' user_id=user_id session_id=session.0 %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" onclick="return confirm('Are you sure you want to cancel this session?');">Cancel</button>
+                    </form>
+                </td>
+                
             </tr>
             {% endfor %}
         </tbody>
@@ -188,6 +196,7 @@
     <table>
         <thead>
             <tr>
+                <th>Class ID</th>
                 <th>Class Name</th>
                 <th>Description</th>
                 <th>Date</th>
@@ -195,6 +204,7 @@
                 <th>Room</th>
                 <th>Location</th>
                 <th>Members Registered</th>
+                <th>Cancel</th>
             </tr>
         </thead>
         <tbody>
@@ -207,11 +217,19 @@
                 <td>{{ class.3 }}</td>
                 <td>{{ class.4 }}</td>
                 <td>{{ class.5 }}</td>
+                <td>{{ class.6 }}</td>
                 <td>
                     <!-- Loop through the member names and display them -->
-                    {% for member_name in class.6 %}
+                    {% for member_name in class.7 %}
                         {{ member_name }}<br>
                     {% endfor %}
+                </td>
+                <td>
+                    <!-- Form with cancel button -->
+                    <form action="{% url 'TrainerApp-cancelClass' user_id=user_id class_id=class.0 %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" onclick="return confirm('Are you sure you want to cancel this class?');">Cancel</button>
+                    </form>
                 </td>
             </tr>
             {% endfor %}

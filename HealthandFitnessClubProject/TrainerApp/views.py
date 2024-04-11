@@ -176,6 +176,7 @@ def fetch_classes(user_id):
     # SQL query
     sql_query = """
         SELECT 
+            GFC.class_id,
             GFC.class_name,
             GFC.description,
             GFC.session_date, 
@@ -194,6 +195,7 @@ def fetch_classes(user_id):
         WHERE 
             GFC.trainer_id = %s
         GROUP BY 
+            GFC.class_id,
             GFC.class_name,
             GFC.description,
             GFC.session_date, 
@@ -517,4 +519,84 @@ def updateSessionDB(request, user_id):
         connection.commit()
 
     # Redirect to sessions_classes page after updating
+    return redirect('TrainerApp-sessions_classes', user_id=user_id)
+
+def cancel_session(request, user_id, session_id):
+    if request.method == 'POST':
+        print("Cancelled Session ID", session_id)
+
+        connection = connect()
+        cursor = connection.cursor()
+
+        # SQL query to get room_id, date, and time for the session being cancelled
+        # This is to update the Room_Bookings table accordingly
+        select_query = """
+        SELECT room_id, session_date, session_time FROM Personal_Training_Sessions
+        WHERE session_id = %s
+        """
+        cursor.execute(select_query, (session_id,))
+        session_info = cursor.fetchone()
+
+        # SQL query to delete the session from Personal_Training_Sessions table
+        delete_query = """
+        DELETE FROM Personal_Training_Sessions
+        WHERE session_id = %s
+        """
+        cursor.execute(delete_query, (session_id,))
+        
+        if session_info:
+            room_id, date, time = session_info
+            # SQL query to update Room_Bookings table to mark the room as not booked
+            update_query = """
+            UPDATE Room_Bookings
+            SET booked = false
+            WHERE room_id = %s AND date = %s AND time = %s
+            """
+            cursor.execute(update_query, (room_id, date, time))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    # Redirect to sessions_classes page after deleting session
+    return redirect('TrainerApp-sessions_classes', user_id=user_id)
+
+def cancel_class(request, user_id, class_id):
+    if request.method == 'POST':
+        print("Cancelled Class ID", class_id)
+
+        connection = connect()
+        cursor = connection.cursor()
+
+        # SQL query to get room_id, date, and time for the class being cancelled
+        # This is to update the Room_Bookings table accordingly
+        select_query = """
+        SELECT room_id, session_date, session_time FROM Group_Fitness_Classes
+        WHERE class_id = %s
+        """
+        cursor.execute(select_query, (class_id,))
+        class_info = cursor.fetchone()
+
+        # SQL query to delete the class from Group_Fitness_Classes table
+        delete_query = """
+        DELETE FROM Group_Fitness_Classes
+        WHERE class_id = %s
+        """
+        cursor.execute(delete_query, (class_id,))
+        
+        if class_info:
+            room_id, date, time = class_info
+            # SQL query to update Room_Bookings table to mark the room as not booked
+            update_query = """
+            UPDATE Room_Bookings
+            SET booked = false
+            WHERE room_id = %s AND date = %s AND time = %s
+            """
+            cursor.execute(update_query, (room_id, date, time))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    # Redirect to sessions_classes page after deleting class
     return redirect('TrainerApp-sessions_classes', user_id=user_id)

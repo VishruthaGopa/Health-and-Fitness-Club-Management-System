@@ -20,4 +20,10 @@ urlpatterns = [
     path('thirdSectionForm-Session/<int:user_id>/', views.thirdSectionForm_Session, name='TrainerApp-thirdSectionForm-Session'),
     path('updateSessionDB-Session/<int:user_id>/', views.updateSessionDB, name='TrainerApp-updateSessionDB-Session'),
 
+    # Cancel Session
+    path('cancel-session/<int:user_id>/<int:session_id>/', views.cancel_session, name='TrainerApp-cancelSession'),
+
+    #Cancel Class
+    path('cancel-class/<int:user_id>/<int:class_id>/', views.cancel_class, name='TrainerApp-cancelClass'),
+
 ]
