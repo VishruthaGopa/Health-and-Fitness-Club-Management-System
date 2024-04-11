@@ -133,7 +133,7 @@ WHERE rb.room_id = gfc.room_id
 INSERT INTO Equipment_Maintenance (equipment_name, last_maintained_date, next_maintenance, performed_by) VALUES
 ('Treadmill', '2024-01-01', '2024-04-01', 3),
 ('Exercise Bike', '2024-02-15', '2024-04-15', 6),
-('Dumbbells Set', '2024-03-20', '2024-04-20', 5),
+('Dumbbells Set', '2024-03-20', '2024-04-20', 3),
 ('Leg Press Machine', '2024-01-03', '2024-04-03', 3),
 ('Chest Press Machine', '2024-01-14', '2024-04-14', 3),
 ('Rowing Machine', '2024-01-10', '2024-04-10', 6);
