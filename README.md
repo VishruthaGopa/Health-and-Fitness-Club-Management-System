@@ -25,6 +25,7 @@ Ensure that the following are installed:
 - Django
 - PostgreSQL
 - Python
+- Psycopg2
 
 ## Setup
 1. **Database Setup**:
