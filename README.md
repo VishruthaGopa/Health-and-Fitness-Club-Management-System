@@ -9,6 +9,7 @@ This application implements a Health and Fitness Club Management System using Dj
 - Profile management
 - Dashboard displaying fitness progress
 - Schedule personal training sessions and group fitness classes
+- Recommends personal trainers to members based on their fitness goals
 
 ### Trainers
 - Profile management
@@ -41,14 +42,18 @@ Ensure that the following are installed:
 3. **Configure Database Connection**:
    - Navigate to the `databaseConnection.py` file located in the `HealthandFitnessClubProject` directory.
    - Update the database connection details in `databaseConnection.py` to match your PostgreSQL configuration.
+    
 4. **Run the Application**:
    - Open a terminal and navigate to the `HealthandFitnessClubProject` directory.
    - Run the command `python manage.py runserver` to start the Django development server.
+    
 5. **Access the Application**:
    - Open a web browser and go to http://localhost:8000/ to access the application.
 
 ## Testing
-- Only members can register using the registration page.
+Only members can register using the registration page.
+- Use the following credentials to access an existing member profile:
+    - Username: user1, Password: pass1
 - Use the following credentials to access trainer functionalities:
     - Username: trainer1, Password: trainerpassword1
     - Username: trainer2, Password: pass2
@@ -56,11 +61,8 @@ Ensure that the following are installed:
     - Username: admin1, Password: adminpassword1
     - Username: admin2, Password: adminpass2
 
-## Bonus Features
-The web application includes a recommendation system that suggests trainers and their specializations based on user fitness goals.
-
 ## YouTube Link
-https://youtu.be/z77f6-cxhWY
+https://youtu.be/a5djQwr_44U
 
 ## Contributors:
 - Vishrutha Gopa
