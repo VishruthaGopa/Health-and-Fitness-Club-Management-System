@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS Member (
     address VARCHAR(255),
     phone_number VARCHAR(15),
     start_date DATE DEFAULT CURRENT_DATE,
-    payment_status BOOLEAN,
+    payment_status BOOLEAN DEFAULT TRUE
 	FOREIGN KEY (member_id) REFERENCES "User"(user_id)
 
 );

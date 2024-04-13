@@ -29,6 +29,7 @@
     display: block;
     margin-bottom: 10px;
   }
+  input[type="date"],
   input[type="text"],
   input[type="password"] {
     width: 100%;
@@ -70,6 +71,19 @@
     <input type="text" id="new_username" name="new_username" required>
     <label for="new_password">New Password:</label>
     <input type="password" id="new_password" name="new_password" required>
+
+    <label for="card_number">Card Number:</label>
+    <input type="text" id="card_number" name="card_number" required>
+
+    <label for="card_holder">Card Holder:</label>
+    <input type="text" id="card_holder" name="card_holder" required>
+
+    <label for="cvv">CVV:</label>
+    <input type="text" id="cvv" name="cvv" required>
+    
+    <label for="expiry_date">Expiry Date:</label>
+    <input type="date" id="expiry_date" name="expiry_date" required><br><br>
+
     <input type="submit" value="Register">
 
     <!-- Message placeholder -->
