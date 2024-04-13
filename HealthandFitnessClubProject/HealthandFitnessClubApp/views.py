@@ -108,6 +108,18 @@ def register_user(username, password):
     # Insert the new user into the User table (default role member)
     cursor.execute("INSERT INTO \"User\" (username, password) VALUES (%s, %s)", (username, password))
     connection.commit()
+
+    member_id = cursor.fetchone()[0]
+    connection.commit()
+
+
+      
+    #add them to the member table using the user_id
+    cursor.execute('INSERT INTO Member (member_id) VALUES (%s)', 
+                [member_id])
+    connection.commit()
+
+
     print("Member registered successfully.")
     connection.close()
     return True
