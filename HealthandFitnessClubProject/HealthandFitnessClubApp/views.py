@@ -109,15 +109,26 @@ def register_user(username, password):
     cursor.execute("INSERT INTO \"User\" (username, password) VALUES (%s, %s)", (username, password))
     connection.commit()
 
-    member_id = cursor.fetchone()[0]
-    connection.commit()
+    #member_id = cursor.fetchone()[0]
+    #connection.commit()
 
+    # Retrieve the user_id of the newly inserted user
+    cursor.execute('SELECT user_id FROM "User" WHERE username = %s', (username,))
+    user_id = cursor.fetchone()[0]
+    print("New user ID:", user_id)  # Print the user_id for testing
 
       
     #add them to the member table using the user_id
-    cursor.execute('INSERT INTO Member (member_id) VALUES (%s)', 
-                [member_id])
+    #cursor.execute('INSERT INTO Member (member_id) VALUES (%s)', 
+    #            [user_id])
+    #connection.commit()
+
+    # Insert a new record into the Member table with default values for certain columns
+    cursor.execute('INSERT INTO Member (member_id, first_name, last_name, email) VALUES (%s, %s, %s, %s)',
+                (user_id, '', '', ''))
     connection.commit()
+
+
 
 
     print("Member registered successfully.")
