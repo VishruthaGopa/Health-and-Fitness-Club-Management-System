@@ -23,6 +23,9 @@ This application implements a Health and Fitness Club Management System using Dj
 ## Prerequisites
 Ensure that the following are installed:
 - Django
+  ```
+  pip install django
+  ```
 - PostgreSQL
 - Python
 - Psycopg2
