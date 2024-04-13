@@ -123,13 +123,13 @@ def register_user(username, password):
     #            [user_id])
     #connection.commit()
 
-    # Insert a new record into the Member table with default values for certain columns
-    cursor.execute('INSERT INTO Member (member_id, first_name, last_name, email) VALUES (%s, %s, %s, %s)',
-                (user_id, '', '', ''))
+    # Add them to the member table using the user_id
+    cursor.execute('INSERT INTO Member (member_id) VALUES (%s)', (user_id,))
     connection.commit()
 
-
-
+    # Insert a new record into the Member_Health table with default values
+    cursor.execute('INSERT INTO Member_Health (member_id) VALUES (%s)', (user_id,))
+    connection.commit()
 
     print("Member registered successfully.")
     connection.close()

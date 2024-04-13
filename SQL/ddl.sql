@@ -9,10 +9,10 @@ CREATE TABLE IF NOT EXISTS "User" (
 -- Create Member table
 CREATE TABLE IF NOT EXISTS Member (
     member_id INTEGER PRIMARY KEY,
-    first_name VARCHAR(20) NOT NULL,
-    last_name VARCHAR(20) NOT NULL,
+    first_name VARCHAR(20),
+    last_name VARCHAR(20),
     gender VARCHAR(10),
-    email VARCHAR(20) UNIQUE NOT NULL,
+    email VARCHAR(20) UNIQUE,
     date_of_birth DATE,
     address VARCHAR(255),
     phone_number VARCHAR(15),
