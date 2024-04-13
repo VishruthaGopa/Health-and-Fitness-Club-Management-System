@@ -415,6 +415,7 @@ Recommend trainers to member based on the form_of_exercise specified in the fitn
 and the trainer's specializations
 """
 def getRecommendations(request, user_id):
+    recommended_trainers = None
     fitness_goal = getFitnessGoals(request, user_id)
     if fitness_goal:
         exercises = fitness_goal['form_of_exercise']
