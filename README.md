@@ -48,7 +48,9 @@ Ensure that the following are installed:
    - Open a web browser and go to http://localhost:8000/ to access the application.
 
 ## Testing
-- Only members can register using the registration page.
+-Only members can register using the registration page.
+- Use the following credentials to access existing member profile:
+    - Username: user1, Password: pass1
 - Use the following credentials to access trainer functionalities:
     - Username: trainer1, Password: trainerpassword1
     - Username: trainer2, Password: pass2
