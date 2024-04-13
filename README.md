@@ -60,7 +60,7 @@ Ensure that the following are installed:
 The web application includes a recommendation system that suggests trainers and their specializations based on user fitness goals.
 
 ## YouTube Link
-https://youtu.be/z77f6-cxhWY
+https://youtu.be/a5djQwr_44U
 
 ## Contributors:
 - Vishrutha Gopa
